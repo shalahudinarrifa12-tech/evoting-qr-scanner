@@ -89,5 +89,24 @@
       }
     };
   </script>
+  
+<hr>
+<h3>Uji Koneksi Google Apps Script</h3>
+
+<form
+  action="https://script.google.com/macros/s/AKfycbyxbF4iqaw7LgNRXUk2JVnOQ6XsSzphU-2xYtQYngtY3w1FPU7O13WD9xwXXzmlKwH3QA/exec"
+  method="POST"
+  target="hasilKoneksi"
+>
+  <input type="hidden" name="action" value="ping">
+  <button type="submit">Tes Koneksi Backend</button>
+</form>
+
+<iframe
+  name="hasilKoneksi"
+  title="Hasil tes koneksi"
+  style="width:100%;height:100px;border:1px solid #ccc;border-radius:8px;"
+></iframe>
+
 </body>
 </html>
