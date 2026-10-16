@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tes Pemindai QR E-Voting</title>
+  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 16px;
+      color: #172554;
+    }
+    button {
+      padding: 12px;
+      margin: 8px 0;
+      width: 100%;
+      background: #1d4ed8;
+      color: white;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #reader { width: 100%; }
+    #hasil { overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h2>Tes Kamera Pemindai QR</h2>
+  <p>Tekan tombol untuk mengaktifkan kamera Chromebook.</p>
+  <button id="mulai">Mulai Kamera</button>
+  <button id="berhenti">Hentikan Kamera</button>
+  <div id="reader"></div>
+  <p id="status">Kamera belum dijalankan.</p>
+  <p id="hasil"></p>
+
+  <script>
+    let scanner = null;
+    let aktif = false;
+
+    document.getElementById('mulai').onclick = async function () {
+      const status = document.getElementById('status');
+      const hasil = document.getElementById('hasil');
+
+      try {
+        if (typeof Html5Qrcode === 'undefined') {
+          throw new Error('Pustaka pemindai QR belum termuat.');
+        }
+
+        if (!scanner) {
+          scanner = new Html5Qrcode('reader');
+        }
+
+        status.textContent = 'Meminta izin kamera...';
+        hasil.textContent = '';
+
+        const kamera = await Html5Qrcode.getCameras();
+
+        if (!kamera.length) {
+          throw new Error('Kamera tidak ditemukan.');
+        }
+
+        await scanner.start(
+          { facingMode: 'environment' },
+          { fps: 10, qrbox: { width: 230, height: 230 } },
+          function (teksQR) {
+            hasil.textContent = 'QR berhasil dibaca: ' + teksQR;
+            status.textContent = 'Pemindaian berhasil.';
+          },
+          function () {}
+        );
+
+        aktif = true;
+        status.textContent = 'Kamera aktif. Arahkan ke QR uji.';
+      } catch (e) {
+        status.textContent = 'Gagal: ' + e.message;
+      }
+    };
+
+    document.getElementById('berhenti').onclick = async function () {
+      if (scanner && aktif) {
+        await scanner.stop();
+        aktif = false;
+        document.getElementById('status').textContent =
+          'Kamera dihentikan.';
+      }
+    };
+  </script>
+</body>
+</html>
