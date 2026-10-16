@@ -473,6 +473,45 @@ konfirmasiVoteEl.textContent = '';
       }
     };
 
+formVote.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  if (sedangMengirimSuara) return;
+
+  if (!kodeQRTerverifikasi || !calonTerpilih) {
+    tampilkanPesan(
+      konfirmasiVoteEl,
+      'Silakan verifikasi QR dan pilih calon terlebih dahulu.'
+    );
+    return;
+  }
+
+  const konfirmasi = window.confirm(
+    'Apakah Anda yakin dengan pilihan calon ini? ' +
+    'Suara yang dikirim tidak dapat diubah.'
+  );
+
+  if (!konfirmasi) return;
+
+  // Pastikan data yang dikirim sesuai pilihan terakhir.
+  kodeQRVoteEl.value = kodeQRTerverifikasi;
+  idCalonVoteEl.value = calonTerpilih;
+
+  sedangMengirimSuara = true;
+  tombolKirimSuara.disabled = true;
+
+  daftarCalonEl.querySelectorAll('button').forEach(function(tombol) {
+    tombol.disabled = true;
+  });
+
+  tampilkanPesan(
+    konfirmasiVoteEl,
+    'Mengirim suara. Jangan tutup halaman atau pindai QR lain.'
+  );
+
+  formVote.requestSubmit();
+});
+
     /*
      * Menerima respons dari Google Apps Script.
      *
@@ -513,6 +552,47 @@ konfirmasiVoteEl.textContent = '';
       if (!data || typeof data.ok !== 'boolean') {
         return;
       }
+
+if (sedangMengirimSuara) {
+  if (data.ok) {
+    tampilkanPesan(
+      konfirmasiVoteEl,
+      data.pesan || 'Suara berhasil dicatat.'
+    );
+
+    tampilkanPesan(
+      statusEl,
+      'Pengiriman suara mendapat konfirmasi dari server.'
+    );
+
+    tampilkanPesan(
+      hasilEl,
+      'Pemungutan suara selesai.'
+    );
+
+    // Jangan izinkan pengiriman ulang dari halaman ini.
+    tombolKirimSuara.disabled = true;
+    panelCalon.hidden = true;
+    sedangMengirimSuara = false;
+  } else {
+    tampilkanPesan(
+      konfirmasiVoteEl,
+      (data.pesan || 'Hasil pengiriman belum dapat dipastikan.') +
+      ' Jangan mengirim ulang sebelum panitia memeriksa DATA_SUARA ' +
+      'dan STATUS_PEMILIH.'
+    );
+
+    tampilkanPesan(
+      statusEl,
+      'Perlu pemeriksaan panitia sebelum mencoba kembali.'
+    );
+
+    // Kunci pengiriman ulang karena hasil mungkin belum pasti.
+    tombolKirimSuara.disabled = true;
+  }
+
+  return;
+}
 
       // Abaikan respons ping yang bukan hasil verifikasi.
       if (!sedangVerifikasi) {
