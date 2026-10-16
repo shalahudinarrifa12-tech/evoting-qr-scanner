@@ -9,6 +9,10 @@
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       max-width: 600px;
@@ -27,6 +31,7 @@
       border: 0;
       border-radius: 8px;
       cursor: pointer;
+      font-size: 15px;
     }
 
     button:disabled {
@@ -55,14 +60,28 @@
     .catatan {
       color: #475569;
       font-size: 14px;
+      line-height: 1.5;
+    }
+
+    #frameVerify {
+      width: 100%;
+      height: 100px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+    }
+
+    .tersembunyi {
+      display: none;
     }
   </style>
 </head>
 
 <body>
   <h2>Pemindai QR E-Voting OSIS</h2>
+
   <p class="catatan">
-    Gunakan QR uji milik pemilih yang memang disiapkan untuk pengujian.
+    Gunakan QR uji milik pemilih yang disiapkan untuk pengujian.
+    Verifikasi QR ini hanya memeriksa identitas, bukan mengirim suara.
   </p>
 
   <button id="mulai">Mulai Kamera</button>
@@ -84,6 +103,7 @@
       method="POST"
       target="framePing"
       action="https://script.google.com/macros/s/AKfycbzfAqMNXuyx_nSI2wTF3oR0b-k7lUHAf9jWIFo55ed0Hq13lZq2ziUOvmaxmQa8J0Xs4w/exec">
+
       <input type="hidden" name="action" value="ping">
       <button type="submit">Tes Koneksi Backend</button>
     </form>
@@ -95,40 +115,50 @@
     </iframe>
   </div>
 
-  <!-- Form tersembunyi untuk verifikasi QR -->
+  <div class="panel">
+    <h3>Respons Verifikasi Backend</h3>
+    <p class="catatan">
+      Bagian ini membantu panitia memeriksa respons saat pengujian.
+    </p>
+
+    <iframe
+      name="frameVerify"
+      id="frameVerify"
+      title="Respons verifikasi"
+      src="about:blank">
+    </iframe>
+  </div>
+
   <form id="formVerify"
     method="POST"
     target="frameVerify"
     action="https://script.google.com/macros/s/AKfycbzfAqMNXuyx_nSI2wTF3oR0b-k7lUHAf9jWIFo55ed0Hq13lZq2ziUOvmaxmQa8J0Xs4w/exec"
-    style="display:none">
+    class="tersembunyi">
 
     <input type="hidden" name="action" value="verify">
     <input type="hidden" name="kodeQR" id="kodeQR">
   </form>
 
-<iframe
-  name="frameVerify"
-  id="frameVerify"
-  title="Respons verifikasi"
-  style="display:block;width:100%;height:120px;border:1px solid #ccc;border-radius:8px">
-</iframe>
-
   <script>
+    'use strict';
+
     const URL_BACKEND =
       'https://script.google.com/macros/s/AKfycbzfAqMNXuyx_nSI2wTF3oR0b-k7lUHAf9jWIFo55ed0Hq13lZq2ziUOvmaxmQa8J0Xs4w/exec';
 
     let scanner = null;
     let aktif = false;
     let sedangVerifikasi = false;
-    let qrTerakhir = '';
 
     const statusEl = document.getElementById('status');
     const hasilEl = document.getElementById('hasil');
     const dataEl = document.getElementById('dataPemilih');
     const tombolMulai = document.getElementById('mulai');
+    const tombolBerhenti = document.getElementById('berhenti');
+    const frameVerify = document.getElementById('frameVerify');
+    const formVerify = document.getElementById('formVerify');
 
     document.getElementById('formPing').action = URL_BACKEND;
-    document.getElementById('formVerify').action = URL_BACKEND;
+    formVerify.action = URL_BACKEND;
 
     function tampilkanPesan(elemen, pesan) {
       elemen.textContent = pesan;
@@ -141,34 +171,53 @@
         } catch (err) {
           console.warn('Kamera tidak dapat dihentikan:', err);
         }
+
         aktif = false;
       }
+    }
+
+    function selesaiVerifikasi() {
+      sedangVerifikasi = false;
+      tombolMulai.disabled = false;
     }
 
     async function prosesQR(teksQR) {
       if (sedangVerifikasi) return;
 
       sedangVerifikasi = true;
-      qrTerakhir = teksQR;
-
       tombolMulai.disabled = true;
-      tampilkanPesan(statusEl, 'QR terbaca. Memverifikasi pemilih...');
-      tampilkanPesan(hasilEl, 'Menunggu respons backend...');
+
+      tampilkanPesan(
+        statusEl,
+        'QR terbaca. Memverifikasi pemilih...'
+      );
+      tampilkanPesan(
+        hasilEl,
+        'Menunggu respons backend...'
+      );
+
       dataEl.replaceChildren();
 
       await hentikanKamera();
 
       document.getElementById('kodeQR').value = teksQR;
-      document.getElementById('formVerify').requestSubmit();
+
+      // Kirim QR ke backend melalui form dan iframe.
+      formVerify.requestSubmit();
     }
 
-    document.getElementById('mulai').onclick = async function () {
+    tombolMulai.onclick = async function () {
       try {
         if (sedangVerifikasi) {
           tampilkanPesan(
             statusEl,
-            'Tunggu sampai proses verifikasi selesai.'
+            'Tunggu sampai verifikasi selesai.'
           );
+          return;
+        }
+
+        if (aktif) {
+          tampilkanPesan(statusEl, 'Kamera sudah aktif.');
           return;
         }
 
@@ -176,7 +225,9 @@
           throw new Error('Pustaka pemindai QR belum termuat.');
         }
 
-        if (!scanner) scanner = new Html5Qrcode('reader');
+        if (!scanner) {
+          scanner = new Html5Qrcode('reader');
+        }
 
         tampilkanPesan(statusEl, 'Meminta izin kamera...');
         tampilkanPesan(hasilEl, 'Arahkan kamera ke QR uji.');
@@ -191,51 +242,68 @@
         await scanner.start(
           { facingMode: 'environment' },
           { fps: 10, qrbox: { width: 230, height: 230 } },
+
           function (teksQR) {
             prosesQR(teksQR).catch(function (err) {
-              console.error(err);
+              console.error('Gagal memproses QR:', err);
+
               tampilkanPesan(
                 statusEl,
-                'Gagal memproses QR. Periksa koneksi.'
+                'Gagal mengirim QR. Periksa koneksi.'
               );
-              sedangVerifikasi = false;
-              tombolMulai.disabled = false;
+
+              tampilkanPesan(
+                hasilEl,
+                'Proses verifikasi gagal dimulai.'
+              );
+
+              selesaiVerifikasi();
             });
           },
+
           function () {}
         );
 
         aktif = true;
-        tampilkanPesan(statusEl, 'Kamera aktif. Arahkan ke QR uji.');
+
+        tampilkanPesan(
+          statusEl,
+          'Kamera aktif. Arahkan ke QR uji.'
+        );
       } catch (err) {
-        tampilkanPesan(statusEl, 'Gagal: ' + err.message);
+        console.error(err);
+
+        tampilkanPesan(
+          statusEl,
+          'Gagal menjalankan kamera: ' + err.message
+        );
       }
     };
 
-    document.getElementById('berhenti').onclick = async function () {
+    tombolBerhenti.onclick = async function () {
       await hentikanKamera();
-      tampilkanPesan(statusEl, 'Kamera dihentikan.');
+
+      if (!sedangVerifikasi) {
+        tampilkanPesan(statusEl, 'Kamera dihentikan.');
+      }
     };
 
-    // Menerima respons dari iframe Google Apps Script.
+    /*
+     * Menerima respons dari Google Apps Script.
+     *
+     * Tidak memeriksa event.source karena respons Google
+     * yang diterima dapat berasal dari iframe bertingkat.
+     * Domain pengirim dan format pesan tetap diperiksa.
+     */
     window.addEventListener('message', function (event) {
       console.log(
-  'PESAN MASUK:',
-  event.origin,
-  event.data
-);
-      console.log(
-  'PESAN DARI IFRAME:',
-  'origin =', event.origin,
-  'sumber cocok =',
-  event.source === document.getElementById('frameVerify').contentWindow,
-  'data =', event.data
-);
-      const frame = document.getElementById('frameVerify');
-
-      if (event.source !== frame.contentWindow) return;
+        'PESAN MASUK:',
+        event.origin,
+        event.data
+      );
 
       let host;
+
       try {
         host = new URL(event.origin).hostname;
       } catch (err) {
@@ -251,48 +319,73 @@
 
       const pesan = event.data;
 
-      if (!pesan || pesan.type !== 'EVOTING_RESPONSE') return;
+      if (!pesan || pesan.type !== 'EVOTING_RESPONSE') {
+        return;
+      }
 
       const data = pesan.data;
 
-      if (!data || typeof data.ok !== 'boolean') return;
-
-      if (!data.ok) {
-        tampilkanPesan(hasilEl, data.pesan || 'QR tidak valid.');
-        tampilkanPesan(
-          statusEl,
-          'Verifikasi ditolak. Hubungi panitia jika diperlukan.'
-        );
-        dataEl.replaceChildren();
-      } else {
-        tampilkanPesan(hasilEl, data.pesan || 'Pemilih valid.');
-
-        // Tampilkan data menggunakan textContent, bukan HTML mentah.
-        const nama = document.createElement('p');
-        nama.textContent = 'Nama: ' + (data.pemilih?.nama || '-');
-
-        const kategori = document.createElement('p');
-        kategori.textContent =
-          'Kategori: ' + (data.pemilih?.kategori || '-');
-
-        const kelas = document.createElement('p');
-        kelas.textContent = 'Kelas/Bagian: ' + (data.pemilih?.kelas || '-');
-
-        const jumlah = document.createElement('p');
-        jumlah.textContent =
-          'Jumlah calon tersedia: ' +
-          (Array.isArray(data.calon) ? data.calon.length : 0);
-
-        dataEl.replaceChildren(nama, kategori, kelas, jumlah);
-
-        tampilkanPesan(
-          statusEl,
-          'Verifikasi selesai. Belum ada suara yang dikirim.'
-        );
+      if (!data || typeof data.ok !== 'boolean') {
+        return;
       }
 
-      sedangVerifikasi = false;
-      tombolMulai.disabled = false;
+      // Abaikan respons ping yang bukan hasil verifikasi.
+      if (!sedangVerifikasi) {
+        console.log('Respons diterima di luar proses verifikasi.');
+        return;
+      }
+
+      if (!data.ok) {
+        tampilkanPesan(
+          hasilEl,
+          data.pesan || 'QR tidak valid.'
+        );
+
+        tampilkanPesan(
+          statusEl,
+          'Verifikasi ditolak. Periksa data atau hubungi panitia.'
+        );
+
+        dataEl.replaceChildren();
+        selesaiVerifikasi();
+        return;
+      }
+
+      tampilkanPesan(
+        hasilEl,
+        data.pesan || 'Pemilih valid.'
+      );
+
+      const nama = document.createElement('p');
+      nama.textContent =
+        'Nama: ' + (data.pemilih?.nama || '-');
+
+      const kategori = document.createElement('p');
+      kategori.textContent =
+        'Kategori: ' + (data.pemilih?.kategori || '-');
+
+      const kelas = document.createElement('p');
+      kelas.textContent =
+        'Kelas/Bagian: ' + (data.pemilih?.kelas || '-');
+
+      const jumlah = document.createElement('p');
+      jumlah.textContent =
+        'Jumlah calon tersedia: ' +
+        (Array.isArray(data.calon) ? data.calon.length : 0);
+
+      dataEl.replaceChildren(
+        nama,
+        kategori,
+        kelas,
+        jumlah
+      );
+
+      tampilkanPesan(
+        statusEl,
+        'Verifikasi selesai. Belum ada suara yang dikirim.'
+      );
+
+      selesaiVerifikasi();
     });
   </script>
 </body>
