@@ -96,6 +96,28 @@
     <div id="dataPemilih"></div>
   </div>
 
+  <div class="panel" id="panelCalon" hidden>
+    <h3>Pilih Calon Ketua OSIS</h3>
+    <p id="petunjukCalon">
+      Silakan pilih satu calon.
+    </p>
+
+    <div id="daftarCalon"></div>
+
+    <form id="formVote" method="POST"
+          target="frameVerify" action="">
+      <input type="hidden" name="action" value="vote">
+      <input type="hidden" name="kodeQR" id="kodeQRVote">
+      <input type="hidden" name="idCalon" id="idCalonVote">
+
+      <button type="submit" id="tombolKirimSuara" disabled>
+        Kirim Suara
+      </button>
+    </form>
+
+    <p id="konfirmasiVote"></p>
+  </div>
+
   <div class="panel">
     <h3>Tes Koneksi Backend</h3>
 
