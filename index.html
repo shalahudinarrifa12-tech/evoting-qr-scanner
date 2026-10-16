@@ -263,6 +263,85 @@ let calonTerpilih = '';
       elemen.textContent = pesan;
     }
 
+function tampilkanDaftarCalon(calon) {
+  daftarCalonEl.replaceChildren();
+  calonTerpilih = '';
+  idCalonVoteEl.value = '';
+  tombolKirimSuara.disabled = true;
+  konfirmasiVoteEl.textContent = '';
+
+  if (!Array.isArray(calon) || calon.length === 0) {
+    tampilkanPesan(daftarCalonEl, 'Belum ada calon yang tersedia.');
+    panelCalon.hidden = false;
+    return;
+  }
+
+  calon.forEach(function(item) {
+    const kartu = document.createElement('div');
+    kartu.className = 'kartu-calon';
+
+    const judul = document.createElement('h4');
+    judul.textContent =
+      'Nomor Urut ' + (item.nomor || '-') ;
+
+    const nama = document.createElement('p');
+    nama.textContent = item.ketua || 'Nama calon belum tersedia';
+
+    kartu.appendChild(judul);
+
+    if (item.foto) {
+      const foto = document.createElement('img');
+      foto.className = 'foto-calon';
+      foto.src = item.foto;
+      foto.alt = 'Foto ' + (item.ketua || 'calon');
+      foto.loading = 'lazy';
+
+      foto.addEventListener('error', function() {
+        foto.remove();
+      });
+
+      kartu.appendChild(foto);
+    }
+
+    kartu.appendChild(nama);
+
+    const tombol = document.createElement('button');
+    tombol.type = 'button';
+    tombol.textContent = 'Pilih Calon';
+
+    tombol.addEventListener('click', function() {
+      if (sedangMengirimSuara) return;
+
+      calonTerpilih = String(item.id || '');
+      idCalonVoteEl.value = calonTerpilih;
+
+      daftarCalonEl.querySelectorAll('.kartu-calon')
+        .forEach(function(elemen) {
+          elemen.classList.remove('terpilih');
+          const tombolKartu = elemen.querySelector('button');
+          if (tombolKartu) {
+            tombolKartu.textContent = 'Pilih Calon';
+          }
+        });
+
+      kartu.classList.add('terpilih');
+      tombol.textContent = 'Calon Terpilih';
+      tombolKirimSuara.disabled = !calonTerpilih;
+
+      tampilkanPesan(
+        konfirmasiVoteEl,
+        'Anda memilih nomor urut ' + (item.nomor || '-') +
+        '. Periksa pilihan sebelum mengirim suara.'
+      );
+    });
+
+    kartu.appendChild(tombol);
+    daftarCalonEl.appendChild(kartu);
+  });
+
+  panelCalon.hidden = false;
+}
+
     async function hentikanKamera() {
       if (scanner && aktif) {
         try {
