@@ -354,6 +354,24 @@ function tampilkanDaftarCalon(calon) {
       }
     }
 
+async function bukaKameraOtomatis() {
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  if (aktif || sedangVerifikasi || sedangMengirimSuara) {
+    return;
+  }
+
+  try {
+    await tombolMulai.onclick();
+  } catch (err) {
+    console.error('Gagal membuka kamera otomatis:', err);
+    tampilkanPesan(
+      statusEl,
+      'Kamera belum aktif. Silakan tekan Mulai Kamera.'
+    );
+  }
+}
+
     function selesaiVerifikasi() {
       sedangVerifikasi = false;
       tombolMulai.disabled = false;
