@@ -244,6 +244,17 @@
     const tombolBerhenti = document.getElementById('berhenti');
     const frameVerify = document.getElementById('frameVerify');
     const formVerify = document.getElementById('formVerify');
+    const panelCalon = document.getElementById('panelCalon');
+const daftarCalonEl = document.getElementById('daftarCalon');
+const formVote = document.getElementById('formVote');
+const kodeQRVoteEl = document.getElementById('kodeQRVote');
+const idCalonVoteEl = document.getElementById('idCalonVote');
+const tombolKirimSuara = document.getElementById('tombolKirimSuara');
+const konfirmasiVoteEl = document.getElementById('konfirmasiVote');
+
+let sedangMengirimSuara = false;
+let kodeQRTerverifikasi = '';
+let calonTerpilih = '';
 
     document.getElementById('formPing').action = URL_BACKEND;
     formVerify.action = URL_BACKEND;
