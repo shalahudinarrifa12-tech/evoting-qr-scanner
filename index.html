@@ -553,42 +553,61 @@ formVote.addEventListener('submit', function(event) {
       }
 
 if (sedangMengirimSuara) {
-  if (data.ok) {
-    tampilkanPesan(
-      konfirmasiVoteEl,
-      data.pesan || 'Suara berhasil dicatat.'
-    );
+  
+if (data.ok) {
+  // Hapus identitas pemilih dari layar.
+  dataEl.replaceChildren();
 
-    tampilkanPesan(
-      statusEl,
-      'Pengiriman suara mendapat konfirmasi dari server.'
-    );
+  // Sembunyikan panel calon dan hapus pilihan sebelumnya.
+  panelCalon.hidden = true;
+  daftarCalonEl.replaceChildren();
+  konfirmasiVoteEl.textContent = '';
 
-    tampilkanPesan(
-      hasilEl,
-      'Pemungutan suara selesai.'
-    );
+  // Kosongkan data transaksi dari formulir dan variabel.
+  kodeQRTerverifikasi = '';
+  calonTerpilih = '';
+  kodeQRVoteEl.value = '';
+  idCalonVoteEl.value = '';
+  document.getElementById('kodeQR').value = '';
 
-    // Jangan izinkan pengiriman ulang dari halaman ini.
-    tombolKirimSuara.disabled = true;
-    panelCalon.hidden = true;
-    sedangMengirimSuara = false;
-  } else {
-    tampilkanPesan(
-      konfirmasiVoteEl,
-      (data.pesan || 'Hasil pengiriman belum dapat dipastikan.') +
-      ' Jangan mengirim ulang sebelum panitia memeriksa DATA_SUARA ' +
-      'dan STATUS_PEMILIH.'
-    );
+  tombolKirimSuara.disabled = true;
 
-    tampilkanPesan(
-      statusEl,
-      'Perlu pemeriksaan panitia sebelum mencoba kembali.'
-    );
+  tampilkanPesan(
+    hasilEl,
+    'Suara berhasil dicatat.'
+  );
 
-    // Kunci pengiriman ulang karena hasil mungkin belum pasti.
-    tombolKirimSuara.disabled = true;
-  }
+  tampilkanPesan(
+    statusEl,
+    'Menyiapkan pemindai untuk pemilih berikutnya...'
+  );
+
+  // Buka kembali proses pemindaian.
+  sedangVerifikasi = false;
+  sedangMengirimSuara = false;
+  tombolMulai.disabled = false;
+
+  // Kamera dimulai kembali secara otomatis.
+  setTimeout(function() {
+    tombolMulai.click();
+  }, 800);
+
+} else {
+  tampilkanPesan(
+    konfirmasiVoteEl,
+    (data.pesan || 'Hasil pengiriman belum dapat dipastikan.') +
+    ' Jangan mengirim ulang sebelum panitia memeriksa DATA_SUARA ' +
+    'dan STATUS_PEMILIH.'
+  );
+
+  tampilkanPesan(
+    statusEl,
+    'Perlu pemeriksaan panitia sebelum mencoba kembali.'
+  );
+
+  // Jangan membuka transaksi baru jika hasil belum pasti.
+  tombolKirimSuara.disabled = true;
+}
 
   return;
 }
