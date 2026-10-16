@@ -220,6 +220,11 @@
     // Menerima respons dari iframe Google Apps Script.
     window.addEventListener('message', function (event) {
       console.log(
+  'PESAN MASUK:',
+  event.origin,
+  event.data
+);
+      console.log(
   'PESAN DARI IFRAME:',
   'origin =', event.origin,
   'sumber cocok =',
