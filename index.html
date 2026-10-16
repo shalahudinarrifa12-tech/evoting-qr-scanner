@@ -375,7 +375,13 @@ function tampilkanDaftarCalon(calon) {
       );
 
       dataEl.replaceChildren();
-
+      panelCalon.hidden = true;
+daftarCalonEl.replaceChildren();
+calonTerpilih = '';
+kodeQRTerverifikasi = '';
+idCalonVoteEl.value = '';
+tombolKirimSuara.disabled = true;
+konfirmasiVoteEl.textContent = '';
       await hentikanKamera();
 
       document.getElementById('kodeQR').value = teksQR;
@@ -533,7 +539,10 @@ function tampilkanDaftarCalon(calon) {
         hasilEl,
         data.pesan || 'Pemilih valid.'
       );
+kodeQRTerverifikasi = document.getElementById('kodeQR').value;
+kodeQRVoteEl.value = kodeQRTerverifikasi;
 
+tampilkanDaftarCalon(data.calon);
       const nama = document.createElement('p');
       nama.textContent =
         'Nama: ' + (data.pemilih?.nama || '-');
