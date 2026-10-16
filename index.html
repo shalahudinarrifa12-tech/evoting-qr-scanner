@@ -219,6 +219,13 @@
 
     // Menerima respons dari iframe Google Apps Script.
     window.addEventListener('message', function (event) {
+      console.log(
+  'PESAN DARI IFRAME:',
+  'origin =', event.origin,
+  'sumber cocok =',
+  event.source === document.getElementById('frameVerify').contentWindow,
+  'data =', event.data
+);
       const frame = document.getElementById('frameVerify');
 
       if (event.source !== frame.contentWindow) return;
