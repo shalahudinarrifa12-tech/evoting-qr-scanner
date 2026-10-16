@@ -618,21 +618,47 @@ if (data.ok) {
         return;
       }
 
-      if (!data.ok) {
-        tampilkanPesan(
-          hasilEl,
-          data.pesan || 'QR tidak valid.'
-        );
 
-        tampilkanPesan(
-          statusEl,
-          'Verifikasi ditolak. Periksa data atau hubungi panitia.'
-        );
+if (!data.ok) {
+  tampilkanPesan(
+    hasilEl,
+    data.pesan || 'QR tidak valid.'
+  );
 
-        dataEl.replaceChildren();
-        selesaiVerifikasi();
-        return;
-      }
+  tampilkanPesan(
+    statusEl,
+    'Verifikasi ditolak. Menyiapkan kamera untuk pemilih berikutnya...'
+  );
+
+  // Bersihkan identitas pemilih.
+  dataEl.replaceChildren();
+
+  // Pastikan panel calon tidak ditampilkan.
+  panelCalon.hidden = true;
+  daftarCalonEl.replaceChildren();
+
+  // Kosongkan data QR dan pilihan sebelumnya.
+  kodeQRTerverifikasi = '';
+  calonTerpilih = '';
+  kodeQRVoteEl.value = '';
+  idCalonVoteEl.value = '';
+  document.getElementById('kodeQR').value = '';
+
+  tombolKirimSuara.disabled = true;
+
+  // Selesaikan verifikasi terlebih dahulu.
+  selesaiVerifikasi();
+
+  // Aktifkan kembali kamera secara otomatis.
+  setTimeout(function() {
+    if (!aktif && !sedangVerifikasi && !sedangMengirimSuara) {
+      tombolMulai.click();
+    }
+  }, 800);
+
+  return;
+}
+
 
       tampilkanPesan(
         hasilEl,
