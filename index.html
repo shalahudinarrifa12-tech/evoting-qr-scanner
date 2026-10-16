@@ -666,14 +666,14 @@ if (!data.ok) {
 
   // Selesaikan verifikasi terlebih dahulu.
   selesaiVerifikasi();
-bukaKameraOtomatis();
+
   // Aktifkan kembali kamera secara otomatis.
   setTimeout(function() {
     if (!aktif && !sedangVerifikasi && !sedangMengirimSuara) {
       tombolMulai.click();
     }
   }, 800);
-
+bukaKameraOtomatis();
   return;
 }
 
