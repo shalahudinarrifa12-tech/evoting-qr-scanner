@@ -55,7 +55,21 @@
 
 .layout-aplikasi.mode-memilih {
   display: block;
-  max-width: 1400px;
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+}
+
+.layout-aplikasi.mode-memilih .kolom-kiri {
+  width: 100%;
+  max-width: none;
+  padding: 22px;
+}
+
+.layout-aplikasi.mode-memilih #panelCalon {
+  width: 100%;
+  max-width: none;
+  margin: 0;
 }
 
 .layout-aplikasi.mode-memilih .kolom-kiri {
@@ -295,6 +309,131 @@ button:disabled {
   .kolom-kiri,
   .kolom-kanan {
     min-width: 0;
+  }
+}
+    /* ===== TAMPILAN HALAMAN PEMILIHAN ===== */
+
+.layout-aplikasi.mode-memilih {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+
+.layout-aplikasi.mode-memilih .kolom-kiri {
+  padding: 24px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.layout-aplikasi.mode-memilih #panelCalon {
+  margin: 0;
+  padding: 24px;
+  border: 1px solid #d8e1ef;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ffffff, #f1f5fb);
+  box-shadow: 0 8px 28px rgba(16, 38, 79, 0.10);
+}
+
+.layout-aplikasi.mode-memilih #panelCalon h3 {
+  margin: 0 0 10px;
+  padding: 18px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #10264f, #1d3d70);
+  border-bottom: 4px solid #e8b94f;
+  color: #ffffff;
+  text-align: center;
+  font-size: 26px;
+}
+
+.layout-aplikasi.mode-memilih #petunjukCalon {
+  margin: 12px 0 22px;
+  color: #52627a;
+  text-align: center;
+  font-size: 16px;
+}
+
+.layout-aplikasi.mode-memilih #daftarCalon {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.layout-aplikasi.mode-memilih #daftarCalon > div {
+  padding: 16px 12px;
+  border: 1px solid #d8e1ef;
+  border-top: 4px solid #e8b94f;
+  border-radius: 16px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow: 0 5px 18px rgba(16, 38, 79, 0.09);
+}
+
+.layout-aplikasi.mode-memilih #daftarCalon h4 {
+  color: #10264f;
+  font-size: 17px;
+  text-align: center;
+}
+
+.layout-aplikasi.mode-memilih #daftarCalon p {
+  color: #24344d;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.layout-aplikasi.mode-memilih #daftarCalon img {
+  height: 180px;
+  max-width: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.layout-aplikasi.mode-memilih #daftarCalon button {
+  width: 100%;
+  padding: 11px 6px;
+  border-radius: 9px;
+  background: #10264f;
+  color: #ffffff;
+}
+
+.layout-aplikasi.mode-memilih #daftarCalon .terpilih {
+  border: 3px solid #d5a52e;
+  background: #fff9e8;
+}
+
+.layout-aplikasi.mode-memilih #tombolKirimSuara {
+  display: block;
+  width: min(100%, 360px);
+  margin: 24px auto 12px;
+  padding: 16px;
+  background: #b88620;
+  color: #ffffff;
+  font-size: 17px;
+}
+
+.layout-aplikasi.mode-memilih #konfirmasiVote {
+  text-align: center;
+  font-weight: bold;
+}
+
+@media (max-width: 900px) {
+  .layout-aplikasi.mode-memilih #daftarCalon {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .layout-aplikasi.mode-memilih .kolom-kiri {
+    padding: 10px;
+  }
+
+  .layout-aplikasi.mode-memilih #panelCalon {
+    padding: 12px;
+  }
+
+  .layout-aplikasi.mode-memilih #daftarCalon {
+    grid-template-columns: 1fr;
   }
 }
   </style>
