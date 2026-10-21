@@ -280,6 +280,22 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
+    /* Pengaturan tata letak dua kolom pada komputer */
+@media (min-width: 761px) {
+  .layout-aplikasi {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr) !important;
+    gap: 24px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .kolom-kiri,
+  .kolom-kanan {
+    min-width: 0;
+  }
+}
   </style>
 </head>
 
