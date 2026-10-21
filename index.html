@@ -75,7 +75,7 @@
 body {
   margin: 0 auto;
   padding: 24px 16px 40px;
-  max-width: 760px;
+  max-width: none;
   min-height: 100vh;
   font-family: Arial, Helvetica, sans-serif;
   color: var(--text);
@@ -393,7 +393,11 @@ button:disabled {
     const tombolBerhenti = document.getElementById('berhenti');
     const frameVerify = document.getElementById('frameVerify');
     const formVerify = document.getElementById('formVerify');
-    const panelCalon = document.getElementById('panelCalon');
+    const panelCalon = document.getElementById('panelCalon');   
+const panelVerifikasi = document.getElementById('panelVerifikasi');
+const tombolMulaiEvoting = document.getElementById('tombolMulaiEvoting');
+const areaScanner = document.getElementById('areaScanner');
+const layoutAplikasi = document.getElementById('layoutAplikasi');
 const daftarCalonEl = document.getElementById('daftarCalon');
 const formVote = document.getElementById('formVote');
 const kodeQRVoteEl = document.getElementById('kodeQRVote');
@@ -404,6 +408,18 @@ const konfirmasiVoteEl = document.getElementById('konfirmasiVote');
 let sedangMengirimSuara = false;
 let kodeQRTerverifikasi = '';
 let calonTerpilih = '';
+let daftarCalonTerverifikasi = [];
+
+tombolMulaiEvoting.addEventListener('click', function() {
+  if (!Array.isArray(daftarCalonTerverifikasi)) return;
+
+  panelVerifikasi.hidden = true;
+  panelCalon.hidden = false;
+
+  layoutAplikasi.classList.add('mode-memilih');
+
+  tampilkanDaftarCalon(daftarCalonTerverifikasi);
+});
 
     formVerify.action = URL_BACKEND;
     formVote.action = URL_BACKEND;
@@ -521,10 +537,22 @@ async function bukaKameraOtomatis() {
   }
 }
 
-    function selesaiVerifikasi() {
-      sedangVerifikasi = false;
-      tombolMulai.disabled = false;
-    }
+function selesaiVerifikasi() {
+  sedangVerifikasi = false;
+  tombolMulai.disabled = false;
+
+  // Jika verifikasi selesai tanpa membuka pemilihan,
+  // tampilkan kembali pemindai dan identitas sekolah.
+  if (panelVerifikasi.hidden === false) {
+    return;
+  }
+
+  panelCalon.hidden = true;
+  panelVerifikasi.hidden = true;
+  tombolMulaiEvoting.hidden = true;
+  areaScanner.hidden = false;
+  layoutAplikasi.classList.remove('mode-memilih');
+}
 
     async function prosesQR(teksQR) {
       if (sedangVerifikasi) return;
@@ -729,6 +757,13 @@ if (data.ok) {
   panelCalon.hidden = true;
   daftarCalonEl.replaceChildren();
   konfirmasiVoteEl.textContent = '';
+  
+  // Kembalikan tampilan ke halaman pemindaian QR.
+  layoutAplikasi.classList.remove('mode-memilih');
+  panelVerifikasi.hidden = true;
+  tombolMulaiEvoting.hidden = true;
+  areaScanner.hidden = false;
+  daftarCalonTerverifikasi = [];
 
   // Kosongkan data transaksi dari formulir dan variabel.
   kodeQRTerverifikasi = '';
@@ -834,7 +869,14 @@ bukaKameraOtomatis();
 kodeQRTerverifikasi = document.getElementById('kodeQR').value;
 kodeQRVoteEl.value = kodeQRTerverifikasi;
 
-tampilkanDaftarCalon(data.calon);
+daftarCalonTerverifikasi = Array.isArray(data.calon)
+  ? data.calon
+  : [];
+
+panelCalon.hidden = true;
+areaScanner.hidden = true;
+panelVerifikasi.hidden = false;
+tombolMulaiEvoting.hidden = false;
       const nama = document.createElement('p');
       nama.textContent =
         'Nama: ' + (data.pemilih?.nama || '-');
