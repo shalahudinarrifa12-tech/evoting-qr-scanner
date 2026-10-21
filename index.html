@@ -4,11 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <div class="logo-sekolah">
-  <img
-    src="logo_smpn1_panawangan_kecil.png"
-    alt="Logo SMP Negeri 1 Panawangan">
-</div>
   <title>Pemindai QR E-Voting OSIS</title>
 
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -27,6 +22,54 @@
   --text: #24344d;
   --muted: #68758a;
   --border: #dfe6f0;
+}
+
+.layout-aplikasi {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.kolom-kiri,
+.kolom-kanan {
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 5px 18px rgba(26, 49, 83, 0.06);
+}
+
+.kolom-kanan {
+  text-align: center;
+}
+
+.kolom-kanan .logo-sekolah img {
+  width: 125px;
+  height: 125px;
+}
+
+.layout-aplikasi.mode-memilih {
+  display: block;
+  max-width: 1400px;
+}
+
+.layout-aplikasi.mode-memilih .kolom-kiri {
+  width: 100%;
+}
+
+.layout-aplikasi.mode-memilih .kolom-kanan {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .layout-aplikasi {
+    grid-template-columns: 1fr;
+  }
 }
 
 body {
@@ -241,23 +284,36 @@ button:disabled {
 </head>
 
 <body>
-  <h2>Pemindai QR E-Voting OSIS</h2>
+  <div class="layout-aplikasi" id="layoutAplikasi">
 
-  <p class="catatan">
-    Gunakan QR uji milik pemilih yang disiapkan untuk pengujian.
-    Verifikasi QR ini hanya memeriksa identitas, bukan mengirim suara.
-  </p>
+    <!-- KOLOM KIRI: PEMINDAIAN DAN PEMILIHAN -->
+    <div class="kolom-kiri" id="kolomKiri">
 
-  <button id="mulai">Mulai Kamera</button>
-  <button id="berhenti">Hentikan Kamera</button>
+      <div id="areaScanner">
+        <h2>Pemindai QR E-Voting OSIS</h2>
 
-  <div id="reader"></div>
-  <p id="status">Kamera belum dijalankan.</p>
+        <p class="catatan">
+          Gunakan QR pemilih yang telah disiapkan.
+          Verifikasi QR untuk melanjutkan proses pemilihan.
+        </p>
+
+        <button id="mulai">Mulai Kamera</button>
+        <button id="berhenti">Hentikan Kamera</button>
+
+        <div id="reader"></div>
+        <p id="status">Kamera belum dijalankan.</p>
+      </div>
 
   <div class="panel">
-    <h3>Hasil Verifikasi</h3>
+
+  <div class="panel" id="panelVerifikasi" hidden>
+    <h3>Hasil Verifikasi Pemilih</h3>
     <p id="hasil">Belum ada QR yang diperiksa.</p>
     <div id="dataPemilih"></div>
+
+    <button type="button" id="tombolMulaiEvoting" hidden>
+      Mulai E-Voting
+    </button>
   </div>
 
   <div class="panel" id="panelCalon" hidden>
@@ -273,6 +329,7 @@ button:disabled {
       <input type="hidden" name="action" value="vote">
       <input type="hidden" name="kodeQR" id="kodeQRVote">
       <input type="hidden" name="idCalon" id="idCalonVote">
+
       <button type="submit" id="tombolKirimSuara" disabled>
         Kirim Suara
       </button>
@@ -280,6 +337,32 @@ button:disabled {
 
     <p id="konfirmasiVote"></p>
   </div>
+
+  </div><!-- penutup kolom kiri -->
+
+  <!-- KOLOM KANAN: IDENTITAS SEKOLAH -->
+  <aside class="kolom-kanan" id="kolomKanan">
+    <div class="logo-sekolah">
+      <img
+        src="logo_smpn1_panawangan_kecil.png"
+        alt="Logo SMP Negeri 1 Panawangan">
+    </div>
+
+    <h2>E-Voting OSIS</h2>
+
+    <h3>SMP Negeri 1 Panawangan</h3>
+
+    <p>
+      Pemilihan Ketua OSIS secara digital untuk mewujudkan
+      pemilihan yang tertib, transparan, dan bertanggung jawab.
+    </p>
+
+    <p class="catatan">
+      Silakan pindai QR pemilih untuk memulai proses pemilihan.
+    </p>
+  </aside>
+
+  </div><!-- penutup layout aplikasi -->
 <iframe name="frameVerify" id="frameVerify"
         title="Respons backend"
         style="display:none;"></iframe>
