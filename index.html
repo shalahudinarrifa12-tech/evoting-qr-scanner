@@ -4,6 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <div class="logo-sekolah">
+  <img
+    src="logo_smpn1_panawangan_kecil.png"
+    alt="Logo SMP Negeri 1 Panawangan">
+</div>
   <title>Pemindai QR E-Voting OSIS</title>
 
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -49,6 +54,25 @@ h2 {
   font-size: clamp(23px, 5vw, 32px);
   line-height: 1.35;
   box-shadow: 0 8px 22px rgba(16, 38, 79, 0.16);
+}
+
+.logo-sekolah {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px 0 18px;
+}
+
+.logo-sekolah img {
+  display: block;
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  padding: 8px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 2px solid #e8b94f;
+  box-shadow: 0 5px 16px rgba(16, 38, 79, 0.15);
 }
 
 h2::before {
