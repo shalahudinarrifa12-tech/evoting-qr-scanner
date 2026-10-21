@@ -314,8 +314,12 @@ button:disabled {
     /* ===== TAMPILAN HALAMAN PEMILIHAN ===== */
 
 .layout-aplikasi.mode-memilih {
-  width: 100%;
-  max-width: none;
+  display: block !important;
+  position: relative;
+  width: calc(100vw - 32px) !important;
+  max-width: none !important;
+  margin-left: calc(50% - 50vw + 16px) !important;
+  margin-right: 0 !important;
   padding: 0;
 }
 
