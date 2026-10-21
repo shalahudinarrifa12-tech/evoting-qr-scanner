@@ -182,41 +182,10 @@
 
     <p id="konfirmasiVote"></p>
   </div>
-
-  <div class="panel">
-    <h3>Tes Koneksi Backend</h3>
-
-    <form id="formPing"
-      method="POST"
-      target="framePing"
-      action="https://script.google.com/macros/s/AKfycbzfAqMNXuyx_nSI2wTF3oR0b-k7lUHAf9jWIFo55ed0Hq13lZq2ziUOvmaxmQa8J0Xs4w/exec">
-
-      <input type="hidden" name="action" value="ping">
-      <button type="submit">Tes Koneksi Backend</button>
-    </form>
-
-    <iframe
-      name="framePing"
-      title="Hasil tes koneksi"
-      style="width:100%;height:80px;border:1px solid #ccc;border-radius:8px">
-    </iframe>
-  </div>
-
-  <div class="panel">
-    <h3>Respons Verifikasi Backend</h3>
-    <p class="catatan">
-      Bagian ini membantu panitia memeriksa respons saat pengujian.
-    </p>
-
-    <iframe
-      name="frameVerify"
-      id="frameVerify"
-      title="Respons verifikasi"
-      src="about:blank">
-    </iframe>
-  </div>
-
-  <form id="formVerify"
+<iframe name="frameVerify" id="frameVerify"
+        title="Respons backend"
+        style="display:none;"></iframe>
+    <form id="formVerify"
     method="POST"
     target="frameVerify"
     action="https://script.google.com/macros/s/AKfycbzfAqMNXuyx_nSI2wTF3oR0b-k7lUHAf9jWIFo55ed0Hq13lZq2ziUOvmaxmQa8J0Xs4w/exec"
@@ -255,7 +224,6 @@ let sedangMengirimSuara = false;
 let kodeQRTerverifikasi = '';
 let calonTerpilih = '';
 
-    document.getElementById('formPing').action = URL_BACKEND;
     formVerify.action = URL_BACKEND;
     formVote.action = URL_BACKEND;
 
