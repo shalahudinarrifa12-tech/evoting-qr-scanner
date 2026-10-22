@@ -399,12 +399,35 @@ button:disabled {
   border-radius: 10px;
 }
 
+
 .layout-aplikasi.mode-memilih #daftarCalon button {
   width: 100%;
-  padding: 11px 6px;
-  border-radius: 9px;
-  background: #10264f;
+  padding: 12px 8px;
+  border: 2px solid #10264f;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #244778 0%, #10264f 100%);
   color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #091831,
+              0 6px 10px rgba(16, 38, 79, 0.18);
+  transform: translateY(0);
+  transition: all 0.15s ease;
+}
+
+.layout-aplikasi.mode-memilih #daftarCalon button:hover {
+  background: linear-gradient(180deg, #e8b94f 0%, #d5a52e 100%);
+  color: #10264f;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #a77a19,
+              0 8px 12px rgba(16, 38, 79, 0.2);
+}
+
+.layout-aplikasi.mode-memilih #daftarCalon button:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #091831,
+              0 3px 5px rgba(16, 38, 79, 0.15);
 }
 
 .layout-aplikasi.mode-memilih #daftarCalon .terpilih {
