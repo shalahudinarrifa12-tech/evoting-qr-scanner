@@ -681,6 +681,9 @@ button:disabled {
 
         <div id="reader"></div>
         <p id="status">Kamera belum dijalankan.</p>
+        <p id="pesanSukses" hidden>
+  Terima kasih, suara Anda berhasil direkam!
+</p>
       </div>
 
   <div class="panel" id="panelVerifikasi" hidden>
@@ -783,6 +786,7 @@ button:disabled {
 
     const statusEl = document.getElementById('status');
     const hasilEl = document.getElementById('hasil');
+    const pesanSuksesEl = document.getElementById('pesanSukses');
     const dataEl = document.getElementById('dataPemilih');
     const tombolMulai = document.getElementById('mulai');
     const tombolBerhenti = document.getElementById('berhenti');
@@ -1188,10 +1192,10 @@ if (data.ok) {
 
   tombolKirimSuara.disabled = true;
 
-tampilkanPesan(
-  hasilEl,
-  'Terima kasih, suara Anda berhasil direkam!'
-);
+pesanSuksesEl.textContent =
+  'Terima kasih, suara Anda berhasil direkam!';
+
+pesanSuksesEl.hidden = false;
 
   tampilkanPesan(
     statusEl,
