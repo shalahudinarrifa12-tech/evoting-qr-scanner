@@ -341,14 +341,20 @@ button:disabled {
 }
 
 .layout-aplikasi.mode-memilih #panelCalon h3 {
-  margin: 0 0 10px;
-  padding: 18px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #10264f, #1d3d70);
-  border-bottom: 4px solid #e8b94f;
+  margin: 0 0 14px;
+  padding: 20px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 5px solid #e8b94f;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #10264f 0%, #1d3d70 60%, #31578b 100%);
   color: #ffffff;
   text-align: center;
-  font-size: 26px;
+  font-size: clamp(21px, 2.4vw, 28px);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 6px 0 #0a1935,
+              0 10px 20px rgba(16, 38, 79, 0.18);
 }
 
 .layout-aplikasi.mode-memilih #petunjukCalon {
