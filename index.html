@@ -501,6 +501,121 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
+    
+/* Modal konfirmasi pilihan suara */
+.modal-konfirmasi[hidden] {
+  display: none !important;
+}
+
+.modal-konfirmasi {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(7, 19, 42, 0.72);
+  backdrop-filter: blur(5px);
+}
+
+.isi-modal-konfirmasi {
+  width: 100%;
+  max-width: 440px;
+  padding: 30px 24px 24px;
+  border: 2px solid #e8b94f;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #ffffff, #eaf0fa);
+  text-align: center;
+  box-shadow: 0 22px 65px rgba(0, 0, 0, 0.3);
+  animation: modalMasuk 0.22s ease-out;
+}
+
+.ikon-konfirmasi {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: #10264f;
+  color: #e8b94f;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.isi-modal-konfirmasi h2 {
+  margin: 0 0 14px;
+  color: #10264f;
+  font-size: 25px;
+}
+
+.isi-modal-konfirmasi p {
+  margin: 8px 0;
+  color: #263957;
+  line-height: 1.6;
+}
+
+.isi-modal-konfirmasi .peringatan-konfirmasi {
+  margin-top: 14px;
+  color: #9a6200;
+  font-weight: 700;
+}
+
+.aksi-konfirmasi {
+  display: flex;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.aksi-konfirmasi button {
+  flex: 1;
+  min-width: 0;
+  padding: 13px 10px;
+  border: 2px solid #10264f;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+#batalKonfirmasiVote {
+  background: #ffffff;
+  color: #10264f;
+}
+
+#setujuKonfirmasiVote {
+  background: #e8b94f;
+  color: #10264f;
+}
+
+.aksi-konfirmasi button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(16, 38, 79, 0.18);
+}
+
+@keyframes modalMasuk {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 420px) {
+  .isi-modal-konfirmasi {
+    padding: 24px 16px 18px;
+  }
+
+  .aksi-konfirmasi {
+    flex-direction: column;
+  }
+}
   </style>
 </head>
 
@@ -886,6 +1001,9 @@ konfirmasiVoteEl.textContent = '';
       }
     };
 
+
+let konfirmasiVoteDisetujui = false;
+
 formVote.addEventListener('submit', function(event) {
   event.preventDefault();
 
@@ -899,12 +1017,14 @@ formVote.addEventListener('submit', function(event) {
     return;
   }
 
-  const konfirmasi = window.confirm(
-    'Apakah Anda yakin dengan pilihan calon ini? ' +
-    'Suara yang dikirim tidak dapat diubah.'
-  );
+  // Tampilkan modal khusus jika pemilih belum menyetujui.
+  if (!konfirmasiVoteDisetujui) {
+    document.getElementById('modalKonfirmasiVote').hidden = false;
+    return;
+  }
 
-  if (!konfirmasi) return;
+  // Reset persetujuan agar tidak digunakan kembali.
+  konfirmasiVoteDisetujui = false;
 
   // Pastikan data yang dikirim sesuai pilihan terakhir.
   kodeQRVoteEl.value = kodeQRTerverifikasi;
@@ -925,6 +1045,20 @@ formVote.addEventListener('submit', function(event) {
   formVote.submit();
 });
 
+// Tombol untuk membatalkan dan memeriksa pilihan kembali.
+document.getElementById('batalKonfirmasiVote').addEventListener('click', function() {
+  document.getElementById('modalKonfirmasiVote').hidden = true;
+});
+
+// Tombol untuk menyetujui dan melanjutkan pengiriman suara.
+document.getElementById('setujuKonfirmasiVote').addEventListener('click', function() {
+  document.getElementById('modalKonfirmasiVote').hidden = true;
+
+  konfirmasiVoteDisetujui = true;
+
+  // Jalankan kembali submit agar pemeriksaan dan pengiriman lama tetap digunakan.
+  formVote.requestSubmit();
+});
     /*
      * Menerima respons dari Google Apps Script.
      *
@@ -1128,5 +1262,24 @@ tombolMulaiEvoting.hidden = false;
       selesaiVerifikasi();
     });
   </script>
+  
+<div id="modalKonfirmasiVote" class="modal-konfirmasi" hidden>
+  <div class="isi-modal-konfirmasi">
+    <div class="ikon-konfirmasi">✓</div>
+    <h2>Konfirmasi Pilihan</h2>
+    <p>Apakah Anda yakin dengan pilihan calon ini?</p>
+    <p class="peringatan-konfirmasi">
+      Suara yang dikirim tidak dapat diubah.
+    </p>
+    <div class="aksi-konfirmasi">
+      <button type="button" id="batalKonfirmasiVote">
+        Periksa Kembali
+      </button>
+      <button type="button" id="setujuKonfirmasiVote">
+        Ya, Kirim Suara
+      </button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
