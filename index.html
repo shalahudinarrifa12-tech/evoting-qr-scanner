@@ -710,6 +710,24 @@ button:disabled {
     <input type="hidden" name="kodeQR" id="kodeQR">
   </form>
 
+  <div id="modalKonfirmasiVote" class="modal-konfirmasi" hidden>
+  <div class="isi-modal-konfirmasi">
+    <div class="ikon-konfirmasi">✓</div>
+    <h2>Konfirmasi Pilihan</h2>
+    <p>Apakah Anda yakin dengan pilihan calon ini?</p>
+    <p class="peringatan-konfirmasi">
+      Suara yang dikirim tidak dapat diubah.
+    </p>
+    <div class="aksi-konfirmasi">
+      <button type="button" id="batalKonfirmasiVote">
+        Periksa Kembali
+      </button>
+      <button type="button" id="setujuKonfirmasiVote">
+        Ya, Kirim Suara
+      </button>
+    </div>
+  </div>
+</div>
   <script>
     'use strict';
 
@@ -1262,24 +1280,5 @@ tombolMulaiEvoting.hidden = false;
       selesaiVerifikasi();
     });
   </script>
-  
-<div id="modalKonfirmasiVote" class="modal-konfirmasi" hidden>
-  <div class="isi-modal-konfirmasi">
-    <div class="ikon-konfirmasi">✓</div>
-    <h2>Konfirmasi Pilihan</h2>
-    <p>Apakah Anda yakin dengan pilihan calon ini?</p>
-    <p class="peringatan-konfirmasi">
-      Suara yang dikirim tidak dapat diubah.
-    </p>
-    <div class="aksi-konfirmasi">
-      <button type="button" id="batalKonfirmasiVote">
-        Periksa Kembali
-      </button>
-      <button type="button" id="setujuKonfirmasiVote">
-        Ya, Kirim Suara
-      </button>
-    </div>
-  </div>
-</div>
 </body>
 </html>
