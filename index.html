@@ -412,6 +412,7 @@ button:disabled {
   background: #fff9e8;
 }
 
+
 .layout-aplikasi.mode-memilih #tombolKirimSuara {
   display: block;
   width: min(100%, 360px);
@@ -426,14 +427,23 @@ button:disabled {
   cursor: pointer;
   box-shadow: 0 6px 0 #a77a19,
               0 9px 15px rgba(16, 38, 79, 0.22);
-    transform: translateY(0);
+  transform: translateY(0);
   transition: all 0.15s ease;
-  .layout-aplikasi.mode-memilih #tombolKirimSuara:hover {
+}
+
+.layout-aplikasi.mode-memilih #tombolKirimSuara:hover {
   background: #f2ca65;
   transform: translateY(-2px);
   box-shadow: 0 8px 0 #a77a19,
               0 12px 18px rgba(16, 38, 79, 0.22);
 }
+
+.layout-aplikasi.mode-memilih #tombolKirimSuara:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #a77a19,
+              0 4px 8px rgba(16, 38, 79, 0.18);
+}
+
 
 .layout-aplikasi.mode-memilih #tombolKirimSuara:active {
   transform: translateY(4px);
