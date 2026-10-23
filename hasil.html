@@ -203,135 +203,133 @@
 
 
 <script>
-  // Interval pembaruan: 15 menit.
   const INTERVAL_PEMBARUAN = 15 * 60 * 1000;
 
-  // Pertahankan URL Apps Script yang sudah Bapak masukkan.
-  const URL_BACKEND = 'https://script.google.com/macros/s/AKfycbwSHqKAAgWFmKKABH-XlzfkyLSpOfnUo084xKOWrmiwhTD_JivCfl_ZUaN59Ut5yM4W2g/exec';
+  const URL_BACKEND =
+    'https://script.google.com/macros/s/AKfycbwSHqKAAgWFmKKABH-XlzfkyLSpOfnUo084xKOWrmiwhTD_JivCfl_ZUaN59Ut5yM4W2g/exec';
 
   const daftarHasilEl = document.getElementById('daftarHasil');
   const totalSuaraEl = document.getElementById('totalSuara');
   const totalCalonEl = document.getElementById('totalCalon');
   const statusEl = document.getElementById('status');
-  
-function muatHasil() {
-  if (!URL_BACKEND || URL_BACKEND.includes('TEMPEL_URL')) {
-    statusEl.textContent = 'URL Apps Script belum diatur.';
-    return;
-  }
 
-  statusEl.textContent = 'Memuat hasil pemilihan...';
+  let sedangMemuat = false;
+  let timerPembaruan;
 
-  const callbackName =
-    'hasilCallback_' + Date.now() + '_' +
-    Math.floor(Math.random() * 100000);
+  function muatHasil() {
+    if (sedangMemuat) return;
 
-  const script = document.createElement('script');
-  const batasWaktu = setTimeout(() => {
-    bersihkan();
-    statusEl.textContent =
-      'Waktu pengambilan data habis. Periksa koneksi Apps Script.';
-  }, 20000);
+    sedangMemuat = true;
+    statusEl.textContent = 'Memuat hasil pemilihan...';
 
-  function bersihkan() {
-    clearTimeout(batasWaktu);
-    delete window[callbackName];
-    script.remove();
-  }
+    const callbackName =
+      'hasilCallback_' + Date.now() + '_' +
+      Math.floor(Math.random() * 100000);
 
-  window[callbackName] = function(data) {
-    bersihkan();
+    const script = document.createElement('script');
+    script.async = true;
 
-    if (!data || !data.berhasil) {
-      daftarHasilEl.replaceChildren();
+    let selesai = false;
 
-      totalSuaraEl.textContent = '—';
-      totalCalonEl.textContent = '—';
+    function bersihkan() {
+      if (selesai) return;
+      selesai = true;
 
+      clearTimeout(timerPembaruan);
+      delete window[callbackName];
+      script.remove();
+      sedangMemuat = false;
+    }
+
+    const batasWaktu = setTimeout(() => {
+      bersihkan();
       statusEl.textContent =
-        data && data.pesan
-          ? data.pesan
-          : 'Hasil belum dapat ditampilkan.';
-      return;
-    }
+        'Permintaan melewati batas waktu. Periksa akses deployment Apps Script.';
+    }, 20000);
 
-    const calon = data.calon || [];
-    const maksimum = Math.max(
-      1,
-      ...calon.map(item => Number(item.jumlahSuara) || 0)
-    );
+    window[callbackName] = function(data) {
+      bersihkan();
 
-    totalSuaraEl.textContent = data.totalSuara ?? 0;
-    totalCalonEl.textContent = calon.length;
-    daftarHasilEl.replaceChildren();
-
-    if (calon.length === 0) {
-      const kosong = document.createElement('div');
-      kosong.className = 'kosong';
-      kosong.textContent = 'Belum ada data calon.';
-      daftarHasilEl.appendChild(kosong);
-    }
-
-    calon.forEach(item => {
-      const jumlah = Number(item.jumlahSuara) || 0;
-      const persen = jumlah / maksimum * 100;
-
-      const kartu = document.createElement('article');
-      kartu.className = 'calon';
-
-      if (item.urlFoto) {
-        const foto = document.createElement('img');
-        foto.src = item.urlFoto;
-        foto.alt = 'Foto ' + item.namaCalon;
-        foto.loading = 'lazy';
-        foto.onerror = () => foto.remove();
-        kartu.appendChild(foto);
+      if (!data || !data.berhasil) {
+        statusEl.textContent =
+          data?.pesan || 'Data hasil belum dapat dibaca.';
+        return;
       }
 
-      const isi = document.createElement('div');
+      const calon = Array.isArray(data.calon) ? data.calon : [];
+      const maksimum = Math.max(
+        1,
+        ...calon.map(c => Number(c.jumlahSuara) || 0)
+      );
 
-      const nama = document.createElement('div');
-      nama.className = 'nama';
-      nama.textContent = item.namaCalon;
+      totalSuaraEl.textContent = data.totalSuara ?? 0;
+      totalCalonEl.textContent = calon.length;
+      daftarHasilEl.replaceChildren();
 
-      const suara = document.createElement('div');
-      suara.className = 'jumlah';
-      suara.textContent = jumlah.toLocaleString('id-ID') + ' suara';
+      if (calon.length === 0) {
+        const kosong = document.createElement('div');
+        kosong.className = 'kosong';
+        kosong.textContent = 'Belum ada data calon.';
+        daftarHasilEl.appendChild(kosong);
+      }
 
-      const latar = document.createElement('div');
-      latar.className = 'batang-latar';
+      calon.forEach(item => {
+        const jumlah = Number(item.jumlahSuara) || 0;
 
-      const batang = document.createElement('div');
-      batang.className = 'batang';
-      batang.style.width = persen + '%';
+        const kartu = document.createElement('article');
+        kartu.className = 'calon';
 
-      latar.appendChild(batang);
-      isi.append(nama, suara, latar);
-      kartu.append(isi);
-      daftarHasilEl.appendChild(kartu);
-    });
+        if (item.urlFoto) {
+          const foto = document.createElement('img');
+          foto.src = item.urlFoto;
+          foto.alt = 'Foto ' + item.namaCalon;
+          foto.onerror = () => foto.remove();
+          kartu.appendChild(foto);
+        }
 
-    statusEl.textContent =
-      'Pembaruan terakhir: ' +
-      new Date().toLocaleString('id-ID') +
-      ' · Pembaruan berikutnya dalam 15 menit.';
-  };
+        const isi = document.createElement('div');
 
-  script.onerror = function() {
-    bersihkan();
-    statusEl.textContent =
-      'Gagal terhubung ke Apps Script.';
-  };
+        const nama = document.createElement('div');
+        nama.className = 'nama';
+        nama.textContent = item.namaCalon;
 
-  const pemisah = URL_BACKEND.includes('?') ? '&' : '?';
+        const suara = document.createElement('div');
+        suara.className = 'jumlah';
+        suara.textContent =
+          jumlah.toLocaleString('id-ID') + ' suara';
 
-  script.src = URL_BACKEND + pemisah +
-    'action=hasil&callback=' + encodeURIComponent(callbackName) +
-    '&t=' + Date.now();
-  console.log('URL HASIL:', script.src);
+        const latar = document.createElement('div');
+        latar.className = 'batang-latar';
 
-  document.body.appendChild(script);
-}
+        const batang = document.createElement('div');
+        batang.className = 'batang';
+        batang.style.width = (jumlah / maksimum * 100) + '%';
+
+        latar.appendChild(batang);
+        isi.append(nama, suara, latar);
+        kartu.appendChild(isi);
+        daftarHasilEl.appendChild(kartu);
+      });
+
+      statusEl.textContent =
+        'Pembaruan terakhir: ' +
+        new Date().toLocaleString('id-ID') +
+        ' · Pembaruan otomatis setiap 15 menit.';
+    };
+
+    script.onerror = function() {
+      bersihkan();
+      statusEl.textContent =
+        'Gagal memuat data. Periksa akses deployment Apps Script.';
+    };
+
+    script.src = URL_BACKEND +
+      '?action=hasil&callback=' +
+      encodeURIComponent(callbackName) +
+      '&t=' + Date.now();
+
+    document.body.appendChild(script);
+  }
 
   muatHasil();
   setInterval(muatHasil, INTERVAL_PEMBARUAN);
