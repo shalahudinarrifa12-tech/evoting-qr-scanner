@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hasil Pemilihan Ketua OSIS</title>
+
+  <style>
+    :root {
+      --navy: #10264f;
+      --gold: #e8b94f;
+      --bg: #f3f6fc;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: var(--navy);
+      background: var(--bg);
+    }
+
+    header {
+      background: linear-gradient(135deg, #10264f, #214a83);
+      color: white;
+      text-align: center;
+      padding: 24px 18px;
+      border-bottom: 6px solid var(--gold);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 42px);
+    }
+
+    header p {
+      margin: 10px 0 0;
+      color: #e8edf8;
+      font-size: clamp(14px, 1.5vw, 20px);
+    }
+
+    main {
+      width: min(1500px, 96%);
+      margin: 24px auto;
+    }
+
+    .ringkasan {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .kartu-ringkasan {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 16px #10264f12;
+    }
+
+    .kartu-ringkasan span {
+      display: block;
+      font-size: clamp(14px, 1.5vw, 20px);
+    }
+
+    .kartu-ringkasan strong {
+      display: block;
+      font-size: clamp(30px, 4vw, 48px);
+      margin-top: 8px;
+    }
+
+    .panel {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 16px #10264f12;
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      font-size: clamp(20px, 2vw, 28px);
+    }
+
+    #daftarHasil {
+      display: grid;
+      gap: 22px;
+    }
+
+    .calon {
+      display: grid;
+      grid-template-columns: minmax(150px, 230px) minmax(0, 1fr);
+      align-items: center;
+      gap: 22px;
+      padding: 18px;
+      border: 1px solid #e0e7f2;
+      border-radius: 14px;
+    }
+
+    .calon img {
+      width: 100%;
+      height: 150px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: #f3f6fc;
+    }
+
+    .nama {
+      font-size: clamp(18px, 2vw, 27px);
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .jumlah {
+      font-size: clamp(16px, 1.6vw, 22px);
+      margin-bottom: 14px;
+    }
+
+    .batang-latar {
+      width: 100%;
+      height: 30px;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #e7edf7;
+    }
+
+    .batang {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #214a83, #e8b94f);
+      border-radius: 8px;
+      transition: width 0.6s ease;
+    }
+
+    #status {
+      margin: 18px 0 0;
+      text-align: center;
+      font-size: 15px;
+      color: #52627a;
+    }
+
+    .kosong {
+      padding: 30px 12px;
+      text-align: center;
+      color: #52627a;
+    }
+
+    @media (max-width: 650px) {
+      .calon {
+        grid-template-columns: 1fr;
+      }
+
+      .calon img {
+        height: 180px;
+      }
+
+      .panel {
+        padding: 14px;
+      }
+    }
+
+    @media (min-width: 1100px) {
+      #daftarHasil {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Hasil Pemilihan Ketua OSIS</h1>
+    <p>SMPN 1 Panawangan · Tahun 2026</p>
+  </header>
+
+  <main>
+    <section class="ringkasan">
+      <div class="kartu-ringkasan">
+        <span>Total Suara Masuk</span>
+        <strong id="totalSuara">—</strong>
+      </div>
+
+      <div class="kartu-ringkasan">
+        <span>Jumlah Calon</span>
+        <strong id="totalCalon">—</strong>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Perolehan Suara Setiap Calon</h2>
+      <div id="daftarHasil">
+        <div class="kosong">Menyiapkan data hasil pemilihan...</div>
+      </div>
+      <p id="status">Menunggu data dari server.</p>
+    </section>
+  </main>
+
+  <script>
+    // Interval dapat diubah: 15 menit = 15 * 60 * 1000 milidetik.
+    const INTERVAL_PEMBARUAN = 15 * 60 * 1000;
+
+    // URL backend akan diisi setelah konfigurasi selesai.
+    const URL_BACKEND = '';
+
+    document.getElementById('status').textContent =
+      'Halaman siap. Koneksi data belum dikonfigurasi.';
+  </script>
+</body>
+</html>
