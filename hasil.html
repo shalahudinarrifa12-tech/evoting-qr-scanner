@@ -328,6 +328,7 @@ function muatHasil() {
   script.src = URL_BACKEND + pemisah +
     'action=hasil&callback=' + encodeURIComponent(callbackName) +
     '&t=' + Date.now();
+  console.log('URL HASIL:', script.src);
 
   document.body.appendChild(script);
 }
