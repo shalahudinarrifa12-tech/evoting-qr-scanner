@@ -1,59 +1,274 @@
-async function barcodeTerbaca(teks) {
-  if (sedangMemproses) return;
-  sedangMemproses = true;
 
-  try {
-    if (scanner && scannerAktif) {
-      await scanner.stop();
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin E-PRESENSI ESPANSA</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
     }
 
-    scannerAktif = false;
-    document.getElementById('tombolMulai').hidden = false;
-    document.getElementById('tombolBerhenti').hidden = true;
+    .header {
+      background: #10264f;
+      color: white;
+      padding: 24px;
+    }
 
-    tampilkanStatus('Barcode terbaca. Memeriksa data siswa...');
+    .header h1 { margin: 0 0 8px; font-size: 24px; }
+    .header p { margin: 0; color: #dbeafe; }
 
-    const respons = await fetch(
-      'https://script.google.com/macros/s/AKfycbz9q4SVzTJMvOOFc2FoJhdLepmjF6lVnOIyVqoeCgtCMMDrTSbWybysDHGrX2be0ZPC/exec',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-        },
-        body: new URLSearchParams({
-          action: 'presensi',
-          nis: teks.trim()
-        })
+    .container {
+      width: min(1100px, 94%);
+      margin: 28px auto;
+    }
+
+    .panel {
+      background: white;
+      padding: 24px;
+      border-radius: 14px;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, .06);
+      margin-bottom: 20px;
+    }
+
+    .panel h2 { margin-top: 0; color: #10264f; }
+
+    .login-panel {
+      max-width: 440px;
+      margin: 42px auto;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 7px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .tombol-utama {
+      width: 100%;
+      margin-top: 20px;
+      color: white;
+      background: #10264f;
+    }
+
+    .tombol-keluar {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    button:disabled { opacity: .6; cursor: wait; }
+
+    .pesan {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .menu-item {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .menu-item h3 { margin: 0 0 8px; color: #10264f; }
+    .menu-item p { margin: 0; color: #64748b; line-height: 1.5; }
+
+    .footer {
+      text-align: center;
+      color: #64748b;
+      font-size: 13px;
+      padding: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <h1>E-PRESENSI ESPANSA</h1>
+    <p>Panel Administrasi SMPN 1 Panawangan</p>
+  </header>
+
+  <main class="container">
+    <section class="panel login-panel" id="panelLogin">
+      <h2>Login Administrator</h2>
+      <p>Masukkan username dan password akun Anda.</p>
+
+      <form id="formLogin">
+        <label for="username">Username</label>
+        <input id="username" name="username"
+          autocomplete="username" required>
+
+        <label for="password">Password</label>
+        <input id="password" name="password"
+          type="password" autocomplete="current-password"
+          required>
+
+        <button class="tombol-utama" id="tombolLogin" type="submit">
+          Masuk
+        </button>
+      </form>
+
+      <div id="pesanLogin" class="pesan" hidden></div>
+    </section>
+
+    <section id="panelDashboard" hidden>
+      <div class="panel">
+        <h2>Dashboard Admin</h2>
+        <p id="salamAdmin"></p>
+        <p>Login berhasil. Pilih menu administrasi yang diperlukan.</p>
+        <button class="tombol-keluar" id="tombolKeluar" type="button">
+          Keluar
+        </button>
+      </div>
+
+      <section class="menu">
+        <div class="menu-item">
+          <h3>Rekap Harian</h3>
+          <p>Melihat catatan masuk dan pulang siswa berdasarkan tanggal.</p>
+        </div>
+        <div class="menu-item">
+          <h3>Rekap Bulanan</h3>
+          <p>Melihat ringkasan kehadiran berdasarkan bulan dan kelas.</p>
+        </div>
+        <div class="menu-item">
+          <h3>Data Siswa</h3>
+          <p>Menyiapkan pencarian dan pemeriksaan data siswa.</p>
+        </div>
+        <div class="menu-item">
+          <h3>Pengaturan</h3>
+          <p>Menyiapkan pengelolaan jadwal dan konfigurasi presensi.</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="footer">
+    E-PRESENSI ESPANSA &copy; 2026 SMPN 1 Panawangan
+  </footer>
+
+  <script>
+    const URL_BACKEND =
+      'https://script.google.com/macros/s/AKfycbz9q4SVzTJMvOOFc2FoJhdLepmjF6lVnOIyVqoeCgtCMMDrTSbWybysDHGrX2be0ZPC/exec';
+
+    const formLogin = document.getElementById('formLogin');
+    const tombolLogin = document.getElementById('tombolLogin');
+    const pesanLogin = document.getElementById('pesanLogin');
+    const panelLogin = document.getElementById('panelLogin');
+    const panelDashboard = document.getElementById('panelDashboard');
+
+    let tokenSesi = '';
+
+    formLogin.addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      tombolLogin.disabled = true;
+      tombolLogin.textContent = 'Memeriksa...';
+      pesanLogin.hidden = true;
+
+      try {
+        const respons = await fetch(URL_BACKEND, {
+          method: 'POST',
+          headers: {
+            'Content-Type':
+              'application/x-www-form-urlencoded;charset=UTF-8'
+          },
+          body: new URLSearchParams({
+            action: 'login',
+            username: document.getElementById('username').value.trim(),
+            password: document.getElementById('password').value
+          })
+        });
+
+        const hasil = await respons.json();
+
+        if (!hasil.sukses || !hasil.token) {
+          throw new Error(
+            hasil.pesan || 'Username atau password salah.'
+          );
+        }
+
+        tokenSesi = hasil.token;
+
+        const cekRespons = await fetch(URL_BACKEND, {
+          method: 'POST',
+          headers: {
+            'Content-Type':
+              'application/x-www-form-urlencoded;charset=UTF-8'
+          },
+          body: new URLSearchParams({
+            action: 'verifikasi_sesi',
+            token: tokenSesi
+          })
+        });
+
+        const cekSesi = await cekRespons.json();
+
+        if (!cekSesi.sukses || !cekSesi.pengguna) {
+          tokenSesi = '';
+          throw new Error('Sesi admin tidak dapat diverifikasi.');
+        }
+
+        panelLogin.hidden = true;
+        panelDashboard.hidden = false;
+        document.getElementById('salamAdmin').textContent =
+          'Selamat datang, ' + (hasil.nama || cekSesi.pengguna.username) + '.';
+        document.getElementById('password').value = '';
+
+      } catch (error) {
+        pesanLogin.textContent =
+          error.message ||
+          'Tidak dapat menghubungi backend. Periksa koneksi dan deployment.';
+        pesanLogin.hidden = false;
+        pesanLogin.style.background = '#fee2e2';
+        pesanLogin.style.color = '#991b1b';
+      } finally {
+        tombolLogin.disabled = false;
+        tombolLogin.textContent = 'Masuk';
       }
-    );
+    });
 
-    const hasil = await respons.json();
-
-    if (hasil.sukses) {
-      tampilkanStatus(
-        'PRESENSI BERHASIL\n' +
-        'Nama: ' + hasil.nama + '\n' +
-        'NIS: ' + hasil.nis + '\n' +
-        'Kelas: ' + hasil.kelas + '\n' +
-        'Jenis: ' + hasil.jenis + '\n' +
-        'Status: ' + hasil.status + '\n' +
-        'Waktu: ' + hasil.waktu
-      );
-    } else {
-      tampilkanStatus(
-        (hasil.pesan || 'Presensi gagal diproses.') +
-        (hasil.nama ? '\nNama: ' + hasil.nama : '') +
-        (hasil.kelas ? '\nKelas: ' + hasil.kelas : '')
-      );
-    }
-
-  } catch (error) {
-    console.error('Kesalahan presensi:', error);
-    tampilkanStatus(
-      'Tidak dapat menghubungi backend presensi. ' +
-      'Periksa koneksi internet dan konfigurasi server.'
-    );
-  } finally {
-    sedangMemproses = false;
-  }
-}
+    document.getElementById('tombolKeluar')
+      .addEventListener('click', function() {
+        tokenSesi = '';
+        panelDashboard.hidden = true;
+        panelLogin.hidden = false;
+        formLogin.reset();
+        pesanLogin.hidden = true;
+      });
+  </script>
+</body>
+</html>
