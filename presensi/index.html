@@ -200,30 +200,66 @@
       document.getElementById('tombolBerhenti').hidden = true;
       tampilkanStatus('Pemindaian dihentikan.');
     }
+    
+async function barcodeTerbaca(teks) {
+  if (sedangMemproses) return;
+  sedangMemproses = true;
 
-    async function barcodeTerbaca(teks) {
-      if (sedangMemproses) return;
-      sedangMemproses = true;
-
-      try {
-        if (scanner && scannerAktif) {
-          await scanner.stop();
-        }
-
-        scannerAktif = false;
-        document.getElementById('tombolMulai').hidden = false;
-        document.getElementById('tombolBerhenti').hidden = true;
-
-        tampilkanStatus(
-          'Barcode terbaca: ' + teks +
-          '. Backend presensi belum dihubungkan.'
-        );
-      } catch (error) {
-        tampilkanStatus('Barcode terbaca, tetapi scanner gagal berhenti.');
-      } finally {
-        sedangMemproses = false;
-      }
+  try {
+    if (scanner && scannerAktif) {
+      await scanner.stop();
     }
+
+    scannerAktif = false;
+    document.getElementById('tombolMulai').hidden = false;
+    document.getElementById('tombolBerhenti').hidden = true;
+
+    tampilkanStatus('Barcode terbaca. Memeriksa data siswa...');
+
+    const respons = await fetch(
+      'https://script.google.com/macros/s/AKfycbz9q4SVzTJMvOOFc2FoJhdLepmjF6lVnOIyVqoeCgtCMMDrTSbWybysDHGrX2be0ZPC/exec',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: new URLSearchParams({
+          action: 'presensi',
+          nis: teks.trim()
+        })
+      }
+    );
+
+    const hasil = await respons.json();
+
+    if (hasil.sukses) {
+      tampilkanStatus(
+        'PRESENSI BERHASIL\n' +
+        'Nama: ' + hasil.nama + '\n' +
+        'NIS: ' + hasil.nis + '\n' +
+        'Kelas: ' + hasil.kelas + '\n' +
+        'Jenis: ' + hasil.jenis + '\n' +
+        'Status: ' + hasil.status + '\n' +
+        'Waktu: ' + hasil.waktu
+      );
+    } else {
+      tampilkanStatus(
+        (hasil.pesan || 'Presensi gagal diproses.') +
+        (hasil.nama ? '\nNama: ' + hasil.nama : '') +
+        (hasil.kelas ? '\nKelas: ' + hasil.kelas : '')
+      );
+    }
+
+  } catch (error) {
+    console.error('Kesalahan presensi:', error);
+    tampilkanStatus(
+      'Tidak dapat menghubungi backend presensi. ' +
+      'Periksa koneksi internet dan konfigurasi server.'
+    );
+  } finally {
+    sedangMemproses = false;
+  }
+}
   </script>
 </body>
 </html>
