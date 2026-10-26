@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>E-PRESENSI ESPANSA</title>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #10264f, #1b477a);
+      color: #17243b;
+      display: flex;
+      justify-content: center;
+      padding: 24px 14px;
+    }
+
+    .wadah {
+      width: 100%;
+      max-width: 620px;
+    }
+
+    .kepala {
+      text-align: center;
+      color: white;
+      margin-bottom: 22px;
+    }
+
+    .kepala h1 {
+      margin: 0 0 8px;
+      font-size: clamp(24px, 5vw, 34px);
+      letter-spacing: 1px;
+    }
+
+    .kepala p {
+      margin: 0;
+      color: #f3d783;
+      font-size: 15px;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 12px 35px #0003;
+    }
+
+    #areaScanner {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .tombol {
+      width: 100%;
+      padding: 13px;
+      margin-top: 12px;
+      border: 0;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .mulai {
+      background: #e8b94f;
+      color: #10264f;
+    }
+
+    .berhenti {
+      background: #e8edf4;
+      color: #10264f;
+    }
+
+    #status {
+      margin-top: 16px;
+      padding: 13px;
+      background: #eef3f9;
+      border-radius: 10px;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .catatan {
+      text-align: center;
+      color: #637087;
+      font-size: 13px;
+      margin: 16px 0 0;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="wadah">
+    <header class="kepala">
+      <h1>E-PRESENSI ESPANSA</h1>
+      <p>SMP NEGERI 1 PANAWANGAN</p>
+    </header>
+
+    <section class="panel">
+      <h2 style="text-align:center;margin-top:0">
+        Pemindaian Barcode Siswa
+      </h2>
+
+      <div id="areaScanner"></div>
+
+      <button id="tombolMulai" class="tombol mulai"
+        onclick="mulaiPemindaian()">
+        Mulai Pemindaian
+      </button>
+
+      <button id="tombolBerhenti" class="tombol berhenti"
+        onclick="berhentiPemindaian()" hidden>
+        Berhenti
+      </button>
+
+      <div id="status">
+        Tekan Mulai Pemindaian untuk mengaktifkan kamera.
+      </div>
+
+      <p class="catatan">
+        Gunakan kamera Chromebook untuk memindai barcode kartu siswa.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    let scanner = null;
+    let scannerAktif = false;
+    let sedangMemproses = false;
+
+    function tampilkanStatus(pesan) {
+      document.getElementById('status').textContent = pesan;
+    }
+
+    async function mulaiPemindaian() {
+      if (scannerAktif) return;
+
+      if (typeof Html5Qrcode === 'undefined') {
+        tampilkanStatus('Pustaka scanner gagal dimuat. Periksa koneksi internet.');
+        return;
+      }
+
+      try {
+        if (!scanner) {
+          scanner = new Html5Qrcode('areaScanner');
+        }
+
+        await scanner.start(
+          { facingMode: 'environment' },
+          {
+            fps: 10,
+            qrbox: { width: 300, height: 150 },
+            formatsToSupport: [
+              Html5QrcodeSupportedFormats.CODE_128,
+              Html5QrcodeSupportedFormats.CODE_39,
+              Html5QrcodeSupportedFormats.EAN_13,
+              Html5QrcodeSupportedFormats.EAN_8,
+              Html5QrcodeSupportedFormats.UPC_A,
+              Html5QrcodeSupportedFormats.UPC_E,
+              Html5QrcodeSupportedFormats.ITF,
+              Html5QrcodeSupportedFormats.QR_CODE
+            ]
+          },
+          barcodeTerbaca,
+          () => {}
+        );
+
+        scannerAktif = true;
+        document.getElementById('tombolMulai').hidden = true;
+        document.getElementById('tombolBerhenti').hidden = false;
+        tampilkanStatus('Kamera aktif. Arahkan ke barcode kartu siswa.');
+      } catch (error) {
+        const detail = error && error.message
+          ? error.message
+          : String(error);
+
+        tampilkanStatus('Kamera gagal diaktifkan: ' + detail);
+      }
+    }
+
+    async function berhentiPemindaian() {
+      if (scanner && scannerAktif) {
+        try {
+          await scanner.stop();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      scannerAktif = false;
+      document.getElementById('tombolMulai').hidden = false;
+      document.getElementById('tombolBerhenti').hidden = true;
+      tampilkanStatus('Pemindaian dihentikan.');
+    }
+
+    async function barcodeTerbaca(teks) {
+      if (sedangMemproses) return;
+      sedangMemproses = true;
+
+      try {
+        if (scanner && scannerAktif) {
+          await scanner.stop();
+        }
+
+        scannerAktif = false;
+        document.getElementById('tombolMulai').hidden = false;
+        document.getElementById('tombolBerhenti').hidden = true;
+
+        tampilkanStatus(
+          'Barcode terbaca: ' + teks +
+          '. Backend presensi belum dihubungkan.'
+        );
+      } catch (error) {
+        tampilkanStatus('Barcode terbaca, tetapi scanner gagal berhenti.');
+      } finally {
+        sedangMemproses = false;
+      }
+    }
+  </script>
+</body>
+</html>
