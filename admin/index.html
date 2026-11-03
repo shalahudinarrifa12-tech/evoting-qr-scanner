@@ -307,16 +307,62 @@ button,input {font:inherit}
         </div>
       </section>
 
-      <section class="page-section" id="page-siswa">
-        <h2 class="page-title">Data Siswa</h2>
-        <p class="page-desc">Pengelolaan data peserta didik SMP Negeri 1 Panawangan.</p>
-        <div class="panel">
-          <h3>Daftar Siswa</h3>
-          <div class="empty-state">
-            Modul data siswa akan kita hubungkan dengan sheet SISWA pada tahap berikutnya.
-          </div>
-        </div>
-      </section>
+<section class="page-section" id="page-siswa">
+  <h2 class="page-title">Data Siswa</h2>
+  <p class="page-desc">
+    Daftar peserta didik SMP Negeri 1 Panawangan.
+  </p>
+
+  <div class="panel">
+    <div style="display:flex;justify-content:space-between;
+      align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px">
+
+      <div>
+        <h3 style="margin-bottom:5px">Daftar Siswa</h3>
+        <small id="jumlahSiswa" style="color:#718096">
+          Menunggu data...
+        </small>
+      </div>
+
+      <button class="primary-btn" id="muatSiswa"
+        type="button" style="width:auto;margin:0">
+        Muat Ulang Data
+      </button>
+    </div>
+
+    <input id="cariSiswa" type="search"
+      placeholder="Cari NIS atau nama siswa..."
+      style="width:100%;padding:12px;border:1px solid #e4eaf2;
+      border-radius:8px;margin-bottom:18px">
+
+    <div id="pesanSiswa" style="font-size:13px;
+      color:#718096;margin-bottom:12px"></div>
+
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;
+        font-size:13px;min-width:650px">
+        <thead>
+          <tr style="background:#f3f6fb;text-align:left">
+            <th style="padding:12px">No.</th>
+            <th style="padding:12px">NIS</th>
+            <th style="padding:12px">NISN</th>
+            <th style="padding:12px">Nama Siswa</th>
+            <th style="padding:12px">Kelas</th>
+            <th style="padding:12px">Status</th>
+          </tr>
+        </thead>
+        <tbody id="tabelSiswa">
+          <tr>
+            <td colspan="6" style="padding:25px;text-align:center">
+              Klik Muat Ulang Data untuk menampilkan siswa.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 
       <section class="page-section" id="page-harian">
         <h2 class="page-title">Rekap Presensi Harian</h2>
