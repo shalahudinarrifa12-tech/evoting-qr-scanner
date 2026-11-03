@@ -2,273 +2,513 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin E-PRESENSI ESPANSA</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin E-PRESENSI ESPANSA</title>
 
-  <style>
-    * { box-sizing: border-box; }
+<style>
+:root {
+  --navy:#142b50;
+  --navy2:#1d3b68;
+  --gold:#e8bd58;
+  --bg:#f3f6fb;
+  --white:#ffffff;
+  --text:#26364d;
+  --muted:#718096;
+  --border:#e4eaf2;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+button,input {font:inherit}
+.hidden {display:none!important}
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f1f5f9;
-      color: #1e293b;
-    }
+/* LOGIN */
+#loginPage {
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  background:linear-gradient(135deg,#10264a,#254d7d);
+}
+.login-card {
+  width:100%;
+  max-width:410px;
+  background:white;
+  padding:35px;
+  border-radius:18px;
+  box-shadow:0 15px 45px #0003;
+}
+.login-logo {
+  width:65px;height:65px;
+  border-radius:16px;
+  background:var(--navy);
+  color:var(--gold);
+  display:grid;
+  place-items:center;
+  font-size:25px;
+  font-weight:bold;
+  margin:0 auto 18px;
+}
+.login-card h2{text-align:center;margin:0;color:var(--navy)}
+.login-card p{text-align:center;color:var(--muted);font-size:13px}
+.login-card label{display:block;font-size:13px;font-weight:bold;margin:20px 0 7px}
+.login-card input {
+  width:100%;padding:13px;
+  border:1px solid var(--border);
+  border-radius:8px;outline:none;
+}
+.login-card input:focus{border-color:#376ba9}
+.primary-btn {
+  width:100%;padding:13px;
+  background:var(--navy);color:white;
+  border:0;border-radius:8px;
+  font-weight:bold;cursor:pointer;margin-top:22px;
+}
+.primary-btn:disabled{opacity:.6;cursor:wait}
+#loginMessage {font-size:13px;text-align:center;color:#c0392b}
 
-    .header {
-      background: #10264f;
-      color: white;
-      padding: 24px;
-    }
-
-    .header h1 { margin: 0 0 8px; font-size: 24px; }
-    .header p { margin: 0; color: #dbeafe; }
-
-    .container {
-      width: min(1100px, 94%);
-      margin: 28px auto;
-    }
-
-    .panel {
-      background: white;
-      padding: 24px;
-      border-radius: 14px;
-      box-shadow: 0 4px 18px rgba(15, 23, 42, .06);
-      margin-bottom: 20px;
-    }
-
-    .panel h2 { margin-top: 0; color: #10264f; }
-
-    .login-panel {
-      max-width: 440px;
-      margin: 42px auto;
-    }
-
-    label {
-      display: block;
-      margin: 16px 0 7px;
-      font-weight: bold;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-
-    button {
-      border: 0;
-      border-radius: 8px;
-      padding: 12px 18px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .tombol-utama {
-      width: 100%;
-      margin-top: 20px;
-      color: white;
-      background: #10264f;
-    }
-
-    .tombol-keluar {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    button:disabled { opacity: .6; cursor: wait; }
-
-    .pesan {
-      margin-top: 16px;
-      padding: 12px;
-      border-radius: 8px;
-      line-height: 1.5;
-      white-space: pre-line;
-    }
-
-    .menu {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
-    .menu-item {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid #e2e8f0;
-    }
-
-    .menu-item h3 { margin: 0 0 8px; color: #10264f; }
-    .menu-item p { margin: 0; color: #64748b; line-height: 1.5; }
-
-    .footer {
-      text-align: center;
-      color: #64748b;
-      font-size: 13px;
-      padding: 20px;
-    }
-  </style>
+/* APP */
+#app {min-height:100vh}
+.sidebar {
+  position:fixed;inset:0 auto 0 0;
+  width:255px;background:var(--navy);
+  color:white;display:flex;flex-direction:column;
+  z-index:20;transition:.25s;
+}
+.brand {
+  padding:25px 20px;
+  border-bottom:1px solid #ffffff20;
+}
+.brand strong{display:block;font-size:17px;letter-spacing:.5px}
+.brand small{color:#c5d3e7;font-size:11px}
+.brand-mark {
+  display:inline-grid;place-items:center;
+  width:38px;height:38px;
+  border-radius:10px;background:var(--gold);
+  color:var(--navy);font-weight:bold;
+  margin-right:10px;vertical-align:middle;
+}
+.nav-title {
+  padding:22px 20px 9px;
+  color:#9fb3cf;font-size:10px;
+  font-weight:bold;letter-spacing:1.2px;
+}
+.nav-menu {padding:0 12px}
+.nav-item {
+  display:flex;align-items:center;gap:13px;
+  width:100%;padding:13px 14px;
+  border:0;border-radius:8px;
+  background:transparent;color:#d9e4f3;
+  text-align:left;cursor:pointer;
+  margin:3px 0;font-size:13px;
+}
+.nav-item:hover,.nav-item.active {
+  background:#ffffff18;color:var(--gold);
+}
+.nav-icon {width:20px;text-align:center;font-size:17px}
+.sidebar-bottom {
+  margin-top:auto;padding:17px 12px;
+  border-top:1px solid #ffffff20;
+}
+.main {margin-left:255px;min-height:100vh}
+.topbar {
+  height:70px;background:white;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  justify-content:space-between;padding:0 30px;
+}
+.topbar h3{font-size:16px;margin:0;color:var(--navy)}
+.admin-info{font-size:12px;color:var(--muted)}
+.content{padding:30px;max-width:1500px;margin:auto}
+.welcome h2{margin:0 0 7px;color:var(--navy);font-size:23px}
+.welcome p{margin:0;color:var(--muted);font-size:13px}
+.page-section{display:none}
+.page-section.active{display:block}
+.page-title{margin:0 0 8px;color:var(--navy);font-size:22px}
+.page-desc{color:var(--muted);font-size:13px;margin:0 0 25px}
+.stats {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:17px;margin:25px 0;
+}
+.stat-card {
+  background:white;border:1px solid var(--border);
+  border-radius:12px;padding:20px;
+}
+.stat-card small{color:var(--muted);font-size:12px}
+.stat-card strong{display:block;font-size:27px;color:var(--navy);margin-top:12px}
+.panel {
+  background:white;border:1px solid var(--border);
+  border-radius:12px;padding:22px;
+}
+.panel h3{font-size:15px;color:var(--navy);margin:0 0 15px}
+.empty-state {
+  padding:35px 15px;text-align:center;
+  color:var(--muted);font-size:13px;
+  background:#f8fafc;border-radius:8px;
+}
+.mobile-toggle {
+  display:none;border:0;background:transparent;
+  color:var(--navy);font-size:23px;cursor:pointer;
+}
+.overlay {
+  display:none;position:fixed;inset:0;
+  background:#0006;z-index:15;
+}
+.footer {
+  padding:25px 0 5px;text-align:center;
+  font-size:11px;color:#98a4b5;
+}
+@media(max-width:950px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .overlay.show{display:block}
+  .main{margin-left:0}
+  .mobile-toggle{display:block}
+  .topbar{padding:0 17px}
+  .content{padding:22px 16px}
+  .stats{gap:10px}
+  .stat-card{padding:15px}
+  .stat-card strong{font-size:23px}
+}
+@media(max-width:380px){
+  .stats{grid-template-columns:1fr}
+}
+</style>
 </head>
 
 <body>
-  <header class="header">
-    <h1>E-PRESENSI ESPANSA</h1>
-    <p>Panel Administrasi SMPN 1 Panawangan</p>
-  </header>
 
-  <main class="container">
-    <section class="panel login-panel" id="panelLogin">
-      <h2>Login Administrator</h2>
-      <p>Masukkan username dan password akun Anda.</p>
+<!-- HALAMAN LOGIN -->
+<div id="loginPage">
+  <div class="login-card">
+    <div class="login-logo">E</div>
+    <h2>E-PRESENSI ESPANSA</h2>
+    <p>Administrator Panel<br>SMP Negeri 1 Panawangan</p>
 
-      <form id="formLogin">
-        <label for="username">Username</label>
-        <input id="username" name="username"
-          autocomplete="username" required>
+    <form id="loginForm">
+      <label>Username</label>
+      <input id="username" type="text" autocomplete="username" required>
 
-        <label for="password">Password</label>
-        <input id="password" name="password"
-          type="password" autocomplete="current-password"
-          required>
+      <label>Password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
 
-        <button class="tombol-utama" id="tombolLogin" type="submit">
-          Masuk
-        </button>
-      </form>
+      <button class="primary-btn" id="loginButton" type="submit">
+        LOGIN ADMINISTRATOR
+      </button>
+      <div id="loginMessage"></div>
+    </form>
+  </div>
+</div>
 
-      <div id="pesanLogin" class="pesan" hidden></div>
-    </section>
+<!-- DASHBOARD -->
+<div id="app" class="hidden">
 
-    <section id="panelDashboard" hidden>
-      <div class="panel">
-        <h2>Dashboard Admin</h2>
-        <p id="salamAdmin"></p>
-        <p>Login berhasil. Pilih menu administrasi yang diperlukan.</p>
-        <button class="tombol-keluar" id="tombolKeluar" type="button">
-          Keluar
-        </button>
+  <div class="overlay" id="overlay"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="brand-mark">E</span>
+      <strong>E-PRESENSI</strong>
+      <small>ESPANSA • ADMIN PANEL</small>
+    </div>
+
+    <div class="nav-title">MENU UTAMA</div>
+    <nav class="nav-menu">
+      <button class="nav-item active" data-page="dashboard">
+        <span class="nav-icon">⌂</span> Dashboard
+      </button>
+      <button class="nav-item" data-page="siswa">
+        <span class="nav-icon">♙</span> Data Siswa
+      </button>
+      <button class="nav-item" data-page="harian">
+        <span class="nav-icon">▦</span> Rekap Harian
+      </button>
+      <button class="nav-item" data-page="bulanan">
+        <span class="nav-icon">▤</span> Rekap Bulanan
+      </button>
+    </nav>
+
+    <div class="nav-title">ADMINISTRASI</div>
+    <nav class="nav-menu">
+      <button class="nav-item" data-page="pengguna">
+        <span class="nav-icon">♧</span> Data Pengguna
+      </button>
+      <button class="nav-item" data-page="perizinan">
+        <span class="nav-icon">▣</span> Perizinan
+      </button>
+      <button class="nav-item" data-page="pengaturan">
+        <span class="nav-icon">⚙</span> Pengaturan
+      </button>
+      <button class="nav-item" data-page="laporan">
+        <span class="nav-icon">▥</span> Laporan
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="nav-item" id="logoutButton">
+        <span class="nav-icon">⇥</span> Keluar
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:15px">
+        <button class="mobile-toggle" id="mobileToggle">☰</button>
+        <h3 id="topTitle">Dashboard</h3>
       </div>
+      <div class="admin-info">
+        Administrator: <strong id="adminName">Admin</strong>
+      </div>
+    </header>
 
-      <section class="menu">
-        <div class="menu-item">
-          <h3>Rekap Harian</h3>
-          <p>Melihat catatan masuk dan pulang siswa berdasarkan tanggal.</p>
+    <div class="content">
+
+      <section class="page-section active" id="page-dashboard">
+        <div class="welcome">
+          <h2>Selamat Datang, Administrator</h2>
+          <p>Panel pengelolaan E-PRESENSI ESPANSA.</p>
         </div>
-        <div class="menu-item">
-          <h3>Rekap Bulanan</h3>
-          <p>Melihat ringkasan kehadiran berdasarkan bulan dan kelas.</p>
+
+        <div class="stats">
+          <div class="stat-card">
+            <small>Jumlah Siswa</small>
+            <strong>—</strong>
+          </div>
+          <div class="stat-card">
+            <small>Hadir Hari Ini</small>
+            <strong>—</strong>
+          </div>
+          <div class="stat-card">
+            <small>Terlambat</small>
+            <strong>—</strong>
+          </div>
+          <div class="stat-card">
+            <small>Tidak Hadir</small>
+            <strong>—</strong>
+          </div>
         </div>
-        <div class="menu-item">
-          <h3>Data Siswa</h3>
-          <p>Menyiapkan pencarian dan pemeriksaan data siswa.</p>
-        </div>
-        <div class="menu-item">
-          <h3>Pengaturan</h3>
-          <p>Menyiapkan pengelolaan jadwal dan konfigurasi presensi.</p>
+
+        <div class="panel">
+          <h3>Aktivitas Presensi Terbaru</h3>
+          <div class="empty-state">
+            Data aktivitas presensi akan ditampilkan setelah dashboard terhubung ke database.
+          </div>
         </div>
       </section>
-    </section>
+
+      <section class="page-section" id="page-siswa">
+        <h2 class="page-title">Data Siswa</h2>
+        <p class="page-desc">Pengelolaan data peserta didik SMP Negeri 1 Panawangan.</p>
+        <div class="panel">
+          <h3>Daftar Siswa</h3>
+          <div class="empty-state">
+            Modul data siswa akan kita hubungkan dengan sheet SISWA pada tahap berikutnya.
+          </div>
+        </div>
+      </section>
+
+      <section class="page-section" id="page-harian">
+        <h2 class="page-title">Rekap Presensi Harian</h2>
+        <p class="page-desc">Pemeriksaan kehadiran siswa berdasarkan tanggal.</p>
+        <div class="panel">
+          <div class="empty-state">Modul rekap harian belum dihubungkan ke database.</div>
+        </div>
+      </section>
+
+      <section class="page-section" id="page-bulanan">
+        <h2 class="page-title">Rekap Presensi Bulanan</h2>
+        <p class="page-desc">Ringkasan kehadiran siswa berdasarkan bulan dan kelas.</p>
+        <div class="panel">
+          <div class="empty-state">Modul rekap bulanan belum dihubungkan ke database.</div>
+        </div>
+      </section>
+
+      <section class="page-section" id="page-pengguna">
+        <h2 class="page-title">Data Pengguna</h2>
+        <p class="page-desc">Pengelolaan akun administrator dan wali kelas.</p>
+        <div class="panel">
+          <div class="empty-state">Modul pengguna belum dihubungkan ke database.</div>
+        </div>
+      </section>
+
+      <section class="page-section" id="page-perizinan">
+        <h2 class="page-title">Perizinan Siswa</h2>
+        <p class="page-desc">Pengelolaan keterangan sakit dan izin siswa.</p>
+        <div class="panel">
+          <div class="empty-state">Modul perizinan belum dihubungkan ke database.</div>
+        </div>
+      </section>
+
+      <section class="page-section" id="page-pengaturan">
+        <h2 class="page-title">Pengaturan</h2>
+        <p class="page-desc">Konfigurasi jadwal dan sistem presensi.</p>
+        <div class="panel">
+          <div class="empty-state">Modul pengaturan belum dihubungkan ke database.</div>
+        </div>
+      </section>
+
+      <section class="page-section" id="page-laporan">
+        <h2 class="page-title">Laporan Presensi</h2>
+        <p class="page-desc">Penyusunan dan pengunduhan laporan kehadiran.</p>
+        <div class="panel">
+          <div class="empty-state">Modul laporan belum dihubungkan ke database.</div>
+        </div>
+      </section>
+
+      <div class="footer">
+        E-PRESENSI ESPANSA © SMP Negeri 1 Panawangan
+      </div>
+    </div>
   </main>
+</div>
 
-  <footer class="footer">
-    E-PRESENSI ESPANSA &copy; 2026 SMPN 1 Panawangan
-  </footer>
+<script>
+const URL_BACKEND =
+'https://script.google.com/macros/s/AKfycbz9q4SVzTJMvOOFc2FoJhdLepmjF6lVnOIyVqoeCgtCMMDrTSbWybysDHGrX2be0ZPC/exec';
 
-  <script>
-    const URL_BACKEND =
-      'https://script.google.com/macros/s/AKfycbz9q4SVzTJMvOOFc2FoJhdLepmjF6lVnOIyVqoeCgtCMMDrTSbWybysDHGrX2be0ZPC/exec';
+const loginPage = document.getElementById('loginPage');
+const app = document.getElementById('app');
+const loginMessage = document.getElementById('loginMessage');
+const loginButton = document.getElementById('loginButton');
 
-    const formLogin = document.getElementById('formLogin');
-    const tombolLogin = document.getElementById('tombolLogin');
-    const pesanLogin = document.getElementById('pesanLogin');
-    const panelLogin = document.getElementById('panelLogin');
-    const panelDashboard = document.getElementById('panelDashboard');
+async function kirimBackend(data) {
+  const form = new URLSearchParams(data);
 
-    let tokenSesi = '';
+  const response = await fetch(URL_BACKEND, {
+    method:'POST',
+    body:form,
+    headers:{
+      'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'
+    },
+    redirect:'follow'
+  });
 
-    formLogin.addEventListener('submit', async function(event) {
-      event.preventDefault();
+  return await response.json();
+}
 
-      tombolLogin.disabled = true;
-      tombolLogin.textContent = 'Memeriksa...';
-      pesanLogin.hidden = true;
+function tampilkanDashboard(pengguna) {
+  loginPage.classList.add('hidden');
+  app.classList.remove('hidden');
+  document.getElementById('adminName').textContent =
+    pengguna && pengguna.username ? pengguna.username : 'Admin';
+}
 
-      try {
-        const respons = await fetch(URL_BACKEND, {
-          method: 'POST',
-          headers: {
-            'Content-Type':
-              'application/x-www-form-urlencoded;charset=UTF-8'
-          },
-          body: new URLSearchParams({
-            action: 'login',
-            username: document.getElementById('username').value.trim(),
-            password: document.getElementById('password').value
-          })
-        });
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
 
-        const hasil = await respons.json();
+  loginButton.disabled = true;
+  loginButton.textContent = 'MEMERIKSA...';
+  loginMessage.textContent = '';
 
-        if (!hasil.sukses || !hasil.token) {
-          throw new Error(
-            hasil.pesan || 'Username atau password salah.'
-          );
-        }
-
-        tokenSesi = hasil.token;
-
-        const cekRespons = await fetch(URL_BACKEND, {
-          method: 'POST',
-          headers: {
-            'Content-Type':
-              'application/x-www-form-urlencoded;charset=UTF-8'
-          },
-          body: new URLSearchParams({
-            action: 'verifikasi_sesi',
-            token: tokenSesi
-          })
-        });
-
-        const cekSesi = await cekRespons.json();
-
-        if (!cekSesi.sukses || !cekSesi.pengguna) {
-          tokenSesi = '';
-          throw new Error('Sesi admin tidak dapat diverifikasi.');
-        }
-
-        panelLogin.hidden = true;
-        panelDashboard.hidden = false;
-        document.getElementById('salamAdmin').textContent =
-          'Selamat datang, ' + (hasil.nama || cekSesi.pengguna.username) + '.';
-        document.getElementById('password').value = '';
-
-      } catch (error) {
-        pesanLogin.textContent =
-          error.message ||
-          'Tidak dapat menghubungi backend. Periksa koneksi dan deployment.';
-        pesanLogin.hidden = false;
-        pesanLogin.style.background = '#fee2e2';
-        pesanLogin.style.color = '#991b1b';
-      } finally {
-        tombolLogin.disabled = false;
-        tombolLogin.textContent = 'Masuk';
-      }
+  try {
+    const hasil = await kirimBackend({
+      action:'login',
+      username:document.getElementById('username').value.trim(),
+      password:document.getElementById('password').value
     });
 
-    document.getElementById('tombolKeluar')
-      .addEventListener('click', function() {
-        tokenSesi = '';
-        panelDashboard.hidden = true;
-        panelLogin.hidden = false;
-        formLogin.reset();
-        pesanLogin.hidden = true;
-      });
-  </script>
+    if (!hasil.sukses || !hasil.token) {
+      throw new Error(hasil.pesan || 'Username atau password tidak sesuai.');
+    }
+
+    const sesi = await kirimBackend({
+      action:'verifikasi_sesi',
+      token:hasil.token
+    });
+
+    if (!sesi.sukses) {
+      throw new Error('Sesi administrator tidak dapat diverifikasi.');
+    }
+
+    sessionStorage.setItem('ep_admin_token', hasil.token);
+    tampilkanDashboard(sesi.pengguna);
+
+  } catch(error) {
+    loginMessage.textContent =
+      error.message || 'Terjadi kesalahan saat login.';
+  } finally {
+    loginButton.disabled = false;
+    loginButton.textContent = 'LOGIN ADMINISTRATOR';
+  }
+});
+
+async function periksaSesi() {
+  const token = sessionStorage.getItem('ep_admin_token');
+  if (!token) return;
+
+  try {
+    const hasil = await kirimBackend({
+      action:'verifikasi_sesi',
+      token:token
+    });
+
+    if (hasil.sukses) {
+      tampilkanDashboard(hasil.pengguna);
+    } else {
+      sessionStorage.removeItem('ep_admin_token');
+    }
+  } catch(error) {
+    console.error('Verifikasi sesi gagal:', error);
+  }
+}
+
+document.querySelectorAll('.nav-item[data-page]').forEach(button => {
+  button.addEventListener('click', function() {
+    const page = this.dataset.page;
+
+    document.querySelectorAll('.nav-item[data-page]')
+      .forEach(item => item.classList.remove('active'));
+    this.classList.add('active');
+
+    document.querySelectorAll('.page-section')
+      .forEach(section => section.classList.remove('active'));
+
+    const target = document.getElementById('page-' + page);
+    if (target) target.classList.add('active');
+
+    document.getElementById('topTitle').textContent =
+      this.textContent.trim();
+
+    tutupSidebar();
+  });
+});
+
+document.getElementById('logoutButton').addEventListener('click', function() {
+  sessionStorage.removeItem('ep_admin_token');
+  app.classList.add('hidden');
+  loginPage.classList.remove('hidden');
+  document.getElementById('password').value = '';
+  loginMessage.textContent = '';
+});
+
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+
+document.getElementById('mobileToggle').addEventListener('click', function() {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('show');
+});
+
+function tutupSidebar() {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('show');
+}
+
+overlay.addEventListener('click', tutupSidebar);
+
+periksaSesi();
+</script>
+
 </body>
 </html>
