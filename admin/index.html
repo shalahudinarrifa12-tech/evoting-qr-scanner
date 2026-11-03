@@ -553,6 +553,115 @@ function tutupSidebar() {
 
 overlay.addEventListener('click', tutupSidebar);
 
+let seluruhDataSiswa = [];
+
+async function muatDataSiswa() {
+  const pesan = document.getElementById('pesanSiswa');
+  const tabel = document.getElementById('tabelSiswa');
+  const jumlah = document.getElementById('jumlahSiswa');
+
+  pesan.textContent = 'Sedang mengambil data siswa...';
+
+  try {
+    const token = sessionStorage.getItem('ep_admin_token');
+
+    const hasil = await kirimBackend({
+      action: 'data_siswa',
+      token: token
+    });
+
+    if (!hasil.sukses) {
+      throw new Error(hasil.pesan || 'Gagal mengambil data siswa.');
+    }
+
+    seluruhDataSiswa = hasil.data || [];
+
+    jumlah.textContent =
+      'Total ' + seluruhDataSiswa.length + ' siswa';
+
+    tampilkanTabelSiswa(seluruhDataSiswa);
+
+    pesan.textContent = 'Data siswa berhasil dimuat.';
+
+  } catch (error) {
+    pesan.textContent = error.message;
+    tabel.innerHTML = `
+      <tr>
+        <td colspan="6" style="padding:25px;text-align:center;color:#c0392b">
+          Data siswa gagal dimuat.
+        </td>
+      </tr>`;
+  }
+}
+
+function tampilkanTabelSiswa(data) {
+  const tabel = document.getElementById('tabelSiswa');
+
+  tabel.replaceChildren();
+
+  if (data.length === 0) {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+
+    td.colSpan = 6;
+    td.textContent = 'Data siswa tidak ditemukan.';
+    td.style.textAlign = 'center';
+    td.style.padding = '25px';
+
+    tr.appendChild(td);
+    tabel.appendChild(tr);
+    return;
+  }
+
+  data.forEach((siswa, index) => {
+    const tr = document.createElement('tr');
+    const nilai = [
+      index + 1,
+      siswa.nis,
+      siswa.nisn,
+      siswa.nama,
+      siswa.kelas,
+      siswa.status
+    ];
+
+    nilai.forEach(value => {
+      const td = document.createElement('td');
+      td.textContent = value ?? '';
+      td.style.padding = '12px';
+      td.style.borderBottom = '1px solid #e4eaf2';
+      tr.appendChild(td);
+    });
+
+    tabel.appendChild(tr);
+  });
+}
+
+document.getElementById('muatSiswa')
+  .addEventListener('click', muatDataSiswa);
+
+document.getElementById('cariSiswa')
+  .addEventListener('input', function() {
+    const kata = this.value.toLowerCase().trim();
+
+    const hasil = seluruhDataSiswa.filter(siswa =>
+      String(siswa.nis).toLowerCase().includes(kata) ||
+      String(siswa.nisn).toLowerCase().includes(kata) ||
+      String(siswa.nama).toLowerCase().includes(kata) ||
+      String(siswa.kelas).toLowerCase().includes(kata)
+    );
+
+    tampilkanTabelSiswa(hasil);
+  });
+
+document.querySelectorAll('.nav-item[data-page="siswa"]')
+  .forEach(button => {
+    button.addEventListener('click', function() {
+      if (sessionStorage.getItem('ep_admin_token')) {
+        muatDataSiswa();
+      }
+    });
+  });
+
 periksaSesi();
 </script>
 
