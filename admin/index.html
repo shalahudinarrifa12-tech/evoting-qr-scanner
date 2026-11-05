@@ -441,7 +441,7 @@ button,input {font:inherit}
         </thead>
         <tbody id="tabelSiswa">
           <tr>
-            <td colspan="6" style="padding:25px;text-align:center">
+            <td colspan="7" style="padding:25px;text-align:center">
               Klik Muat Ulang Data untuk menampilkan siswa.
             </td>
           </tr>
@@ -644,9 +644,9 @@ overlay.addEventListener('click', tutupSidebar);
 let seluruhDataSiswa = [];
 
 async function muatDataSiswa() {
-  const pesan = document.getElementById('pesanSiswa');
-  const tabel = document.getElementById('tabelSiswa');
-  const jumlah = document.getElementById('jumlahSiswa');
+const pesan = document.getElementById('pesanSiswa');
+const tabel = document.getElementById('tabelSiswa');
+const jumlah = document.getElementById('jumlahSiswa');
 
   pesan.textContent = 'Sedang mengambil data siswa...';
 
@@ -675,7 +675,7 @@ async function muatDataSiswa() {
     pesan.textContent = error.message;
     tabel.innerHTML = `
       <tr>
-        <td colspan="6" style="padding:25px;text-align:center;color:#c0392b">
+        <td colspan="7" style="padding:25px;text-align:center;color:#c0392b">
           Data siswa gagal dimuat.
         </td>
       </tr>`;
@@ -683,9 +683,32 @@ async function muatDataSiswa() {
 }
 
 function tampilkanTabelSiswa(data) {
+  const tabel = document.getElementById('tabelSiswa');
+
+  if (!tabel) {
+    console.error('Elemen tabelSiswa tidak ditemukan.');
+    return;
+  }
+
+  tabel.replaceChildren();
+
+  if (!Array.isArray(data) || data.length === 0) {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+
+    td.colSpan = 7;
+    td.textContent = 'Data siswa tidak ditemukan.';
+    td.style.textAlign = 'center';
+    td.style.padding = '25px';
+
+    tr.appendChild(td);
+    tabel.appendChild(tr);
+    return;
+  }
 
   data.forEach((siswa, index) => {
     const tr = document.createElement('tr');
+
     const nilai = [
       index + 1,
       siswa.nis,
@@ -702,6 +725,20 @@ function tampilkanTabelSiswa(data) {
       td.style.borderBottom = '1px solid #e4eaf2';
       tr.appendChild(td);
     });
+
+    const tdAksi = document.createElement('td');
+    tdAksi.style.padding = '12px';
+    tdAksi.style.borderBottom = '1px solid #e4eaf2';
+
+    const tombolEdit = document.createElement('button');
+    tombolEdit.type = 'button';
+    tombolEdit.textContent = 'Edit';
+    tombolEdit.addEventListener('click', function() {
+      siapkanEditSiswa(siswa);
+    });
+
+    tdAksi.appendChild(tombolEdit);
+    tr.appendChild(tdAksi);
 
     tabel.appendChild(tr);
   });
