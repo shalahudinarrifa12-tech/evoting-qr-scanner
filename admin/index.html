@@ -639,23 +639,6 @@ async function muatDataSiswa() {
 }
 
 function tampilkanTabelSiswa(data) {
-  const tabel = document.getElementById('tabelSiswa');
-
-  tabel.replaceChildren();
-
-  if (data.length === 0) {
-    const tr = document.createElement('tr');
-    const td = document.createElement('td');
-
-    td.colSpan = 6;
-    td.textContent = 'Data siswa tidak ditemukan.';
-    td.style.textAlign = 'center';
-    td.style.padding = '25px';
-
-    tr.appendChild(td);
-    tabel.appendChild(tr);
-    return;
-  }
 
   data.forEach((siswa, index) => {
     const tr = document.createElement('tr');
