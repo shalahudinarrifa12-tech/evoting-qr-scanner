@@ -795,6 +795,78 @@ document.getElementById('simpanSiswa')
       tombol.textContent = 'Simpan Data';
     }
   });
+
+  
+// Menyiapkan formulir edit siswa
+function siapkanEditSiswa(siswa) {
+  document.getElementById('formTambahSiswa').hidden = true;
+  document.getElementById('formEditSiswa').hidden = false;
+
+  document.getElementById('editNIS').value = siswa.nis;
+  document.getElementById('editTampilNIS').value = siswa.nis;
+  document.getElementById('editNISN').value = siswa.nisn;
+  document.getElementById('editNama').value = siswa.nama;
+  document.getElementById('editKelas').value = siswa.kelas;
+
+  document.getElementById('pesanEditSiswa').textContent = '';
+
+  document.getElementById('formEditSiswa')
+    .scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Membatalkan edit
+document.getElementById('batalEditSiswa')
+  .addEventListener('click', function() {
+    document.getElementById('formEditSiswa').hidden = true;
+  });
+
+// Menyimpan perubahan siswa
+document.getElementById('simpanEditSiswa')
+  .addEventListener('click', async function() {
+    const tombol = this;
+    const pesan = document.getElementById('pesanEditSiswa');
+
+    const nis = document.getElementById('editNIS').value.trim();
+    const nisn = document.getElementById('editNISN').value.trim();
+    const nama = document.getElementById('editNama').value.trim();
+    const kelas = document.getElementById('editKelas').value.trim();
+
+    if (!nis || !nisn || !nama || !kelas) {
+      pesan.textContent = 'Semua kolom wajib diisi.';
+      return;
+    }
+
+    tombol.disabled = true;
+    tombol.textContent = 'Menyimpan...';
+
+    try {
+      const hasil = await kirimBackend({
+        action: 'edit_siswa',
+        token: sessionStorage.getItem('ep_admin_token'),
+        nis: nis,
+        nisn: nisn,
+        nama: nama,
+        kelas: kelas
+      });
+
+      if (!hasil.sukses) {
+        throw new Error(hasil.pesan || 'Gagal memperbarui data siswa.');
+      }
+
+      pesan.textContent = 'Data siswa berhasil diperbarui.';
+
+      await muatDataSiswa();
+
+      document.getElementById('formEditSiswa').hidden = true;
+
+    } catch (error) {
+      pesan.textContent = error.message;
+    } finally {
+      tombol.disabled = false;
+      tombol.textContent = 'Simpan Perubahan';
+    }
+  });
+
 periksaSesi();
 </script>
 
