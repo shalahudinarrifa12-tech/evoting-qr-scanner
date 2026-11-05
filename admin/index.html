@@ -326,6 +326,46 @@ button,input {font:inherit}
 <button type="button" id="tambahSiswa">
   + Tambah Siswa
 </button>
+      <div id="formTambahSiswa" hidden
+     style="background:#f5f7fb;padding:20px;margin-top:15px;border-radius:10px;">
+
+  <h3>Formulir Tambah Siswa</h3>
+
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;">
+
+    <div>
+      <label>NIS</label>
+      <input type="text" id="inputNIS" placeholder="Masukkan NIS">
+    </div>
+
+    <div>
+      <label>NISN</label>
+      <input type="text" id="inputNISN" placeholder="Masukkan NISN">
+    </div>
+
+    <div>
+      <label>Nama Siswa</label>
+      <input type="text" id="inputNama" placeholder="Masukkan nama siswa">
+    </div>
+
+    <div>
+      <label>Kelas</label>
+      <input type="text" id="inputKelas" placeholder="Contoh: VII A">
+    </div>
+
+  </div>
+
+  <p id="pesanTambahSiswa"></p>
+
+  <button type="button" id="simpanSiswa">
+    Simpan Data
+  </button>
+
+  <button type="button" id="batalTambahSiswa">
+    Batal
+  </button>
+
+</div>
       <button class="primary-btn" id="muatSiswa"
         type="button" style="width:auto;margin:0">
         Muat Ulang Data
