@@ -703,7 +703,69 @@ document.querySelectorAll('.nav-item[data-page="siswa"]')
       }
     });
   });
+// Menampilkan formulir tambah siswa
+document.getElementById('tambahSiswa')
+  .addEventListener('click', function() {
+    document.getElementById('formTambahSiswa').hidden = false;
+    document.getElementById('pesanTambahSiswa').textContent = '';
+  });
 
+// Menutup formulir
+document.getElementById('batalTambahSiswa')
+  .addEventListener('click', function() {
+    document.getElementById('formTambahSiswa').hidden = true;
+  });
+
+// Menyimpan data siswa
+document.getElementById('simpanSiswa')
+  .addEventListener('click', async function() {
+    const tombol = this;
+    const pesan = document.getElementById('pesanTambahSiswa');
+
+    const nis = document.getElementById('inputNIS').value.trim();
+    const nisn = document.getElementById('inputNISN').value.trim();
+    const nama = document.getElementById('inputNama').value.trim();
+    const kelas = document.getElementById('inputKelas').value.trim();
+
+    if (!nis || !nisn || !nama || !kelas) {
+      pesan.textContent = 'Semua kolom wajib diisi.';
+      return;
+    }
+
+    tombol.disabled = true;
+    tombol.textContent = 'Menyimpan...';
+    pesan.textContent = '';
+
+    try {
+      const hasil = await kirimBackend({
+        action: 'tambah_siswa',
+        token: sessionStorage.getItem('ep_admin_token'),
+        nis: nis,
+        nisn: nisn,
+        nama: nama,
+        kelas: kelas
+      });
+
+      if (!hasil.sukses) {
+        throw new Error(hasil.pesan || 'Gagal menyimpan data siswa.');
+      }
+
+      pesan.textContent = 'Data siswa berhasil ditambahkan.';
+
+      document.getElementById('inputNIS').value = '';
+      document.getElementById('inputNISN').value = '';
+      document.getElementById('inputNama').value = '';
+      document.getElementById('inputKelas').value = '';
+
+      await muatDataSiswa();
+
+    } catch (error) {
+      pesan.textContent = error.message;
+    } finally {
+      tombol.disabled = false;
+      tombol.textContent = 'Simpan Data';
+    }
+  });
 periksaSesi();
 </script>
 
