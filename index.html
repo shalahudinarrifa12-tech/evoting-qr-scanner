@@ -1556,7 +1556,9 @@ if (!data.ok) {
       );
 kodeQRTerverifikasi = document.getElementById('kodeQR').value;
 kodeQRVoteEl.value = kodeQRTerverifikasi;
-
+      
+console.log('DATA CALON DARI BACKEND:', data.calon);
+      
 daftarCalonTerverifikasi = Array.isArray(data.calon)
   ? data.calon
   : [];
