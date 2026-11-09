@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pemindai QR E-Voting Ketua OSIS</title>
+  <title>E-Voting Ketua dan Wakil Ketua OSIS</title>
 
   <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
@@ -133,7 +133,7 @@ h2 {
 }
 
 h2::before {
-  content: "PEMILIHAN KETUA OSIS SMPN 1 PANAWANGAN";
+  content: "PEMILIHAN KETUA DAN WAKIL KETUA OSIS SMPN 1 PANAWANGAN";
   display: block;
   margin-bottom: 9px;
   color: var(--gold);
@@ -659,6 +659,203 @@ button:disabled {
   color: #ffffff !important;
   background-color: #10264f !important;
 }
+    
+/* =====================================
+   DESAIN BARU: TIGA PASANGAN CALON OSIS
+===================================== */
+
+/* Tiga kartu pasangan pada layar komputer */
+.layout-aplikasi.mode-memilih #daftarCalon {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 20px;
+}
+
+/* Desain kartu pasangan */
+.layout-aplikasi.mode-memilih #daftarCalon > div {
+  padding: 18px 14px;
+  border: 1px solid #d5dfef;
+  border-top: 5px solid #e8b94f;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #ffffff, #eaf0fa);
+  text-align: center;
+  box-shadow: 0 8px 22px rgba(16, 38, 79, 0.12);
+}
+
+/* Nomor urut */
+.layout-aplikasi.mode-memilih #daftarCalon h4 {
+  margin: 4px 0 16px;
+  color: #10264f;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+/* Foto pasangan */
+.layout-aplikasi.mode-memilih #daftarCalon img {
+  width: 100%;
+  height: 190px;
+  max-width: 100%;
+  margin: 0 auto 18px;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 12px;
+}
+
+/* Label jabatan */
+.layout-aplikasi.mode-memilih #daftarCalon .label-jabatan {
+  margin: 12px 0 3px;
+  color: #a47718;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+/* Nama Ketua dan Wakil */
+.layout-aplikasi.mode-memilih #daftarCalon .nama-calon {
+  margin: 2px 0 10px;
+  color: #10264f;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+/* Kartu yang sudah dipilih */
+.layout-aplikasi.mode-memilih #daftarCalon .terpilih {
+  border: 3px solid #d5a52e;
+  border-top: 5px solid #b88620;
+  background: linear-gradient(145deg, #fff9e8, #ffedb8);
+  box-shadow: 0 0 0 3px rgba(232, 185, 79, 0.25),
+              0 8px 18px rgba(16, 38, 79, 0.2);
+}
+
+/* =====================================
+   POPUP KONFIRMASI DAN KEBERHASILAN
+===================================== */
+
+#modalKonfirmasiVote .isi-modal-konfirmasi,
+#modalSuksesVote .isi-modal-konfirmasi {
+  width: 100%;
+  max-width: 460px;
+  padding: 30px 24px;
+  border: 2px solid #e8b94f;
+  border-radius: 22px;
+  background: #ffffff !important;
+  color: #1e293b;
+  text-align: center;
+}
+
+/* Judul popup */
+#modalKonfirmasiVote .isi-modal-konfirmasi h2,
+#modalSuksesVote .isi-modal-konfirmasi h2 {
+  margin: 0 0 16px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none;
+  color: #10264f !important;
+  font-size: 23px;
+  text-align: center;
+}
+
+/* Teks popup */
+#modalKonfirmasiVote .isi-modal-konfirmasi p,
+#modalSuksesVote .isi-modal-konfirmasi p {
+  color: #334155 !important;
+  background: transparent !important;
+  line-height: 1.6;
+}
+
+/* Detail pasangan pada popup konfirmasi */
+.detail-pasangan-konfirmasi {
+  margin: 18px 0;
+  padding: 18px 14px;
+  border: 1px solid #e3e9f2;
+  border-radius: 14px;
+  background: #f2f5fa;
+}
+
+.nomor-pasangan-konfirmasi {
+  margin-bottom: 16px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #10264f;
+  color: #e8b94f;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.identitas-calon-konfirmasi {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 12px 0;
+}
+
+.identitas-calon-konfirmasi span {
+  color: #a47718;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.identitas-calon-konfirmasi strong {
+  color: #10264f;
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+/* Popup keberhasilan */
+#modalSuksesVote .ikon-konfirmasi {
+  background: #10264f;
+  color: #e8b94f;
+  width: 70px;
+  height: 70px;
+  font-size: 38px;
+}
+
+#modalSuksesVote .isi-modal-konfirmasi h2 {
+  font-size: 24px;
+  font-weight: 900;
+}
+
+#modalSuksesVote .peringatan-konfirmasi {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #eaf5ed !important;
+  color: #176b36 !important;
+  font-weight: 800;
+}
+
+/* =====================================
+   RESPONSIVE TABLET DAN HP
+===================================== */
+
+@media (max-width: 900px) {
+  .layout-aplikasi.mode-memilih #daftarCalon {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .layout-aplikasi.mode-memilih #daftarCalon {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+
+  .layout-aplikasi.mode-memilih #daftarCalon > div {
+    padding: 18px;
+  }
+
+  .layout-aplikasi.mode-memilih #daftarCalon img {
+    height: 200px;
+  }
+
+  #modalKonfirmasiVote .isi-modal-konfirmasi,
+  #modalSuksesVote .isi-modal-konfirmasi {
+    padding: 24px 16px;
+  }
+}
   </style>
 </head>
 
@@ -669,7 +866,7 @@ button:disabled {
     <div class="kolom-kiri" id="kolomKiri">
 
       <div id="areaScanner">
-        <h2>Pemindai QR E-Voting Ketua OSIS</h2>
+        <h2>Pemindai QR E-Voting Ketua dan Wakil Ketua OSIS</h2>
 
         <p class="catatan">
           Gunakan QR pemilih yang telah disiapkan.
@@ -714,7 +911,7 @@ button:disabled {
   </div>
 
   <div class="panel" id="panelCalon" hidden>
-    <h3>Pilih Calon Ketua OSIS</h3>
+    <h3>Pilih Pasangan Ketua dan Wakil Ketua OSIS</h3>
     <p id="petunjukCalon">
       Silakan pilih satu calon.
     </p>
@@ -1289,10 +1486,7 @@ if (data.ok) {
   // Setelah itu popup ditutup dan kamera aktif kembali.
   setTimeout(function() {
     modalSuksesVote.hidden = true;
-
-    if (!aktif) {
-      tombolMulai.click();
-    }
+    bukaKameraOtomatis();
   }, 3000);
 
 } else {
@@ -1353,15 +1547,8 @@ if (!data.ok) {
   selesaiVerifikasi();
 
   // Aktifkan kembali kamera secara otomatis.
-  setTimeout(function() {
-    if (!aktif && !sedangVerifikasi && !sedangMengirimSuara) {
-      tombolMulai.click();
-    }
-  }, 800);
-bukaKameraOtomatis();
+  bukaKameraOtomatis();
   return;
-}
-
 
       tampilkanPesan(
         hasilEl,
