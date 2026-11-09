@@ -681,9 +681,26 @@ button:disabled {
 
         <div id="reader"></div>
         <p id="status">Kamera belum dijalankan.</p>
-        <p id="pesanSukses" hidden>
-  Terima kasih, suara Anda berhasil direkam!
-</p>
+
+<!-- POPUP SUARA BERHASIL DIREKAM -->
+<div id="modalSuksesVote" class="modal-konfirmasi" hidden>
+  <div class="isi-modal-konfirmasi">
+
+    <div class="ikon-konfirmasi">✓</div>
+
+    <h2>ANDA TELAH MEMILIH</h2>
+
+    <p>
+      Terima kasih telah menggunakan hak suara
+      dalam Pemilihan Ketua dan Wakil Ketua OSIS.
+    </p>
+
+    <p class="peringatan-konfirmasi">
+      Suara Anda berhasil direkam.
+    </p>
+
+  </div>
+</div>
       </div>
 
   <div class="panel" id="panelVerifikasi" hidden>
@@ -756,24 +773,51 @@ button:disabled {
     <input type="hidden" name="kodeQR" id="kodeQR">
   </form>
 
-  <div id="modalKonfirmasiVote" class="modal-konfirmasi" hidden>
+  
+<div id="modalKonfirmasiVote" class="modal-konfirmasi" hidden>
   <div class="isi-modal-konfirmasi">
+
     <div class="ikon-konfirmasi">✓</div>
+
     <h2>Konfirmasi Pilihan</h2>
-    <p>Apakah Anda yakin dengan pilihan calon ini?</p>
-    <p class="peringatan-konfirmasi">
-      Suara yang dikirim tidak dapat diubah.
+
+    <p class="teks-konfirmasi">
+      Anda akan memilih pasangan:
     </p>
+
+    <div class="detail-pasangan-konfirmasi">
+      <div class="nomor-pasangan-konfirmasi">
+        PASANGAN NOMOR <span id="konfirmasiNomor">-</span>
+      </div>
+
+      <div class="identitas-calon-konfirmasi">
+        <span>KETUA OSIS</span>
+        <strong id="konfirmasiKetua">-</strong>
+      </div>
+
+      <div class="identitas-calon-konfirmasi">
+        <span>WAKIL KETUA OSIS</span>
+        <strong id="konfirmasiWakil">-</strong>
+      </div>
+    </div>
+
+    <p class="peringatan-konfirmasi">
+      Suara yang sudah dikirim tidak dapat diubah.
+    </p>
+
     <div class="aksi-konfirmasi">
       <button type="button" id="batalKonfirmasiVote">
         Periksa Kembali
       </button>
+
       <button type="button" id="setujuKonfirmasiVote">
         Ya, Kirim Suara
       </button>
     </div>
+
   </div>
 </div>
+
   <script>
     'use strict';
 
@@ -786,7 +830,7 @@ button:disabled {
 
     const statusEl = document.getElementById('status');
     const hasilEl = document.getElementById('hasil');
-    const pesanSuksesEl = document.getElementById('pesanSukses');
+    const modalSuksesVote = document.getElementById('modalSuksesVote');
     const dataEl = document.getElementById('dataPemilih');
     const tombolMulai = document.getElementById('mulai');
     const tombolBerhenti = document.getElementById('berhenti');
@@ -827,6 +871,7 @@ tombolMulaiEvoting.addEventListener('click', function() {
       elemen.textContent = pesan;
     }
 
+
 function tampilkanDaftarCalon(calon) {
   daftarCalonEl.replaceChildren();
   calonTerpilih = '';
@@ -835,7 +880,7 @@ function tampilkanDaftarCalon(calon) {
   konfirmasiVoteEl.textContent = '';
 
   if (!Array.isArray(calon) || calon.length === 0) {
-    tampilkanPesan(daftarCalonEl, 'Belum ada calon yang tersedia.');
+    tampilkanPesan(daftarCalonEl, 'Belum ada pasangan calon yang tersedia.');
     panelCalon.hidden = false;
     return;
   }
@@ -844,20 +889,17 @@ function tampilkanDaftarCalon(calon) {
     const kartu = document.createElement('div');
     kartu.className = 'kartu-calon';
 
+    // Nomor urut pasangan
     const judul = document.createElement('h4');
-    judul.textContent =
-      'Nomor Urut ' + (item.nomor || '-') ;
-
-    const nama = document.createElement('p');
-    nama.textContent = item.ketua || 'Nama calon belum tersedia';
-
+    judul.textContent = 'PASANGAN NOMOR ' + (item.nomor || '-');
     kartu.appendChild(judul);
 
+    // Foto pasangan
     if (item.foto) {
       const foto = document.createElement('img');
       foto.className = 'foto-calon';
       foto.src = item.foto;
-      foto.alt = 'Foto ' + (item.ketua || 'calon');
+      foto.alt = 'Foto pasangan calon nomor ' + (item.nomor || '-');
       foto.loading = 'lazy';
 
       foto.addEventListener('error', function() {
@@ -867,11 +909,32 @@ function tampilkanDaftarCalon(calon) {
       kartu.appendChild(foto);
     }
 
-    kartu.appendChild(nama);
+    // Nama Ketua
+    const labelKetua = document.createElement('p');
+    labelKetua.textContent = 'KETUA OSIS';
+    labelKetua.className = 'label-jabatan';
+    kartu.appendChild(labelKetua);
 
+    const namaKetua = document.createElement('p');
+    namaKetua.className = 'nama-calon';
+    namaKetua.textContent = item.ketua || 'Nama Ketua belum tersedia';
+    kartu.appendChild(namaKetua);
+
+    // Nama Wakil Ketua
+    const labelWakil = document.createElement('p');
+    labelWakil.textContent = 'WAKIL KETUA OSIS';
+    labelWakil.className = 'label-jabatan';
+    kartu.appendChild(labelWakil);
+
+    const namaWakil = document.createElement('p');
+    namaWakil.className = 'nama-calon';
+    namaWakil.textContent = item.wakil || 'Nama Wakil belum tersedia';
+    kartu.appendChild(namaWakil);
+
+    // Tombol pilih pasangan
     const tombol = document.createElement('button');
     tombol.type = 'button';
-    tombol.textContent = 'Pilih Calon';
+    tombol.textContent = 'Pilih Pasangan';
 
     tombol.addEventListener('click', function() {
       if (sedangMengirimSuara) return;
@@ -882,21 +945,37 @@ function tampilkanDaftarCalon(calon) {
       daftarCalonEl.querySelectorAll('.kartu-calon')
         .forEach(function(elemen) {
           elemen.classList.remove('terpilih');
+
           const tombolKartu = elemen.querySelector('button');
           if (tombolKartu) {
-            tombolKartu.textContent = 'Pilih Calon';
+            tombolKartu.textContent = 'Pilih Pasangan';
           }
         });
 
-kartu.classList.add('terpilih');
-tombol.textContent = '✓ Calon Terpilih';
-tombolKirimSuara.disabled = !calonTerpilih;
+      kartu.classList.add('terpilih');
+      tombol.textContent = '✓ Pasangan Terpilih';
+      tombolKirimSuara.disabled = !calonTerpilih;
 
+
+      // Mengisi informasi pasangan pada popup konfirmasi
+      document.getElementById('konfirmasiNomor').textContent =
+        item.nomor || '-';
+
+      document.getElementById('konfirmasiKetua').textContent =
+        item.ketua || '-';
+
+      document.getElementById('konfirmasiWakil').textContent =
+        item.wakil || '-';
+
+      // Menampilkan ringkasan pilihan
       tampilkanPesan(
         konfirmasiVoteEl,
-        'Anda memilih nomor urut ' + (item.nomor || '-') +
-        '. Periksa pilihan sebelum mengirim suara.'
+        'Anda memilih pasangan nomor ' + (item.nomor || '-') +
+        ': Ketua ' + (item.ketua || '-') +
+        ' dan Wakil Ketua ' + (item.wakil || '-') +
+        '. Periksa kembali pilihan sebelum mengirim suara.'
       );
+
     });
 
     kartu.appendChild(tombol);
@@ -1192,25 +1271,29 @@ if (data.ok) {
 
   tombolKirimSuara.disabled = true;
 
-pesanSuksesEl.textContent =
-  'Terima kasih, suara Anda berhasil direkam!';
 
-pesanSuksesEl.hidden = false;
+  // Tampilkan popup keberhasilan.
+  modalSuksesVote.hidden = false;
 
   tampilkanPesan(
     statusEl,
-    'Menyiapkan pemindai untuk pemilih berikutnya...'
+    'Suara berhasil direkam. Menyiapkan pemindai berikutnya...'
   );
 
-  // Buka kembali proses pemindaian.
+  // Kembalikan status aplikasi.
   sedangVerifikasi = false;
   sedangMengirimSuara = false;
   tombolMulai.disabled = false;
 
-  // Kamera dimulai kembali secara otomatis.
+  // Popup tampil selama 3 detik.
+  // Setelah itu popup ditutup dan kamera aktif kembali.
   setTimeout(function() {
-    tombolMulai.click();
-  }, 800);
+    modalSuksesVote.hidden = true;
+
+    if (!aktif) {
+      tombolMulai.click();
+    }
+  }, 3000);
 
 } else {
   tampilkanPesan(
